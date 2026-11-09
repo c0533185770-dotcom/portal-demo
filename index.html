@@ -1,0 +1,907 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+
+<title>פורטל מייצגים</title>
+<script>document.documentElement.lang="he";document.documentElement.dir="rtl"</script>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&family=Inter:wght@400&display=swap" rel="stylesheet">
+<style>
+:root{--blue:#0073FF;--blue2:#1E5EFF;--send:#254ADB;--bub:#EFF6FF;--line:#E6E9F4;--ink:#131523;--sub:#5A607F;--mut:#A1A7C4;--side:#F5F6FA}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:'Ploni ML v2 AAA',Heebo,Arial,sans-serif;background:#fff;color:#000;display:grid;grid-template-columns:250px 360px 1fr;grid-template-rows:100px 1fr;height:100vh;overflow:hidden;font-size:14.4px}
+button,input{font:inherit;color:inherit}
+img{display:block}
+.ic{width:24px;height:24px}
+/* top bar */
+.topbar{grid-column:2/4;grid-row:1;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:flex-start;gap:20px;padding:0 64px;direction:ltr}
+.topbar img{width:26px;height:26px;cursor:pointer;opacity:.9}
+.brand{grid-column:1;grid-row:1;display:flex;align-items:center;gap:14px;padding:0 22px;background:#fff;border-bottom:1px solid var(--line)}
+.brand img{width:44px;height:44px;border-radius:50%;object-fit:cover}
+.brand b{color:var(--blue);font-size:24px;font-weight:700}
+/* sidebar */
+.side{grid-column:1;grid-row:2;background:var(--side);border-left:1px solid var(--line);display:flex;flex-direction:column;padding:38px 16px 18px}
+.nav{display:flex;align-items:center;gap:14px;height:44px;padding:0 18px;border-radius:6px;background:#fff0;color:var(--sub);font-size:18px;cursor:pointer;margin-bottom:12px;box-shadow:0 0 0 1px #0000}
+.nav.box{background:#F1F3F9}
+.nav.on{background:var(--blue);color:#fff}
+.nav:not(.on):hover{background:#E9ECF5}
+.sec{margin-top:auto;font-size:12px;color:#9CA3AF;letter-spacing:1px;padding:0 18px 14px}
+.nav.plain{background:none;margin-bottom:4px}
+.foot{margin-top:46px;background:var(--blue);border-radius:10px;color:#fff;display:flex;align-items:center;gap:12px;padding:10px 16px;font-size:14px;line-height:1.3}
+.foot img{width:36px;height:36px;border-radius:50%;object-fit:cover}
+/* threads */
+.list{grid-column:2;grid-row:2;border-left:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+.lh{display:flex;justify-content:space-between;align-items:center;padding:30px 28px 0}
+.lh b{font-size:18.7px;font-weight:500}
+.lh span{color:var(--mut);font-family:Inter,sans-serif;font-size:14.4px}
+.search{margin:44px 28px 30px;height:40px;border:1px solid #D9E1EC;border-radius:4px;padding:0 14px;outline:none;font-size:14.4px}
+.search::placeholder{color:var(--mut)}
+.search:focus{border-color:var(--blue)}
+.threads{overflow:auto;flex:1}
+.th{display:flex;align-items:center;gap:14px;height:98px;padding:0 28px;border-bottom:1px solid var(--line);cursor:pointer}
+.th.on{background:#F5F8FC}
+.th:hover:not(.on){background:#FAFBFD}
+.pic{position:relative;width:48px;height:48px;flex:none}
+.pic img.face{width:48px;height:48px;border-radius:50%;object-fit:cover}
+.pic img.st{position:absolute;width:16px;height:16px;bottom:-1px;right:-2px}
+.tx{flex:1;min-width:0}
+.tx b{font-size:14.4px;color:var(--ink);font-weight:700}
+.tx .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--blue2);margin-inline-start:6px;vertical-align:middle}
+.tx p{color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:6px}
+.th time{color:var(--mut);font-family:Inter,sans-serif;font-size:12.3px;align-self:flex-start;margin-top:30px}
+/* chat */
+.chat{grid-column:3;grid-row:2;display:flex;flex-direction:column;min-width:0;min-height:0;padding:0 28px 0 28px}
+.ch{display:flex;align-items:center;gap:12px;height:80px;border-bottom:1px solid var(--line)}
+.ch .g{width:8px;height:8px;border-radius:50%;background:#1FD286}
+.ch b{font-size:16.5px;color:var(--ink);font-weight:700}
+.ch .tools{margin-inline-start:auto;display:flex;gap:20px;direction:ltr}
+.ch .tools button{background:none;border:none;cursor:pointer;padding:0}
+.msgs{flex:1;overflow:auto;padding:28px 0;display:flex;flex-direction:column;gap:6px}
+.m{display:flex;gap:16px;align-items:flex-start;max-width:78%}
+.m img{width:38px;height:38px;border-radius:50%;object-fit:cover;flex:none}
+.m .b{padding:12px 16px;border-radius:2px;line-height:20.6px;white-space:pre-wrap;min-height:45px;display:flex;align-items:center}
+.m small{display:block;font-family:Inter,sans-serif;font-size:12.3px;color:var(--mut);margin:12px 28px 14px}
+.m.bot{align-self:flex-start}
+.m.bot .b{background:var(--blue2);color:#fff}
+.m.me{align-self:flex-end;flex-direction:row-reverse}
+.m.me .b{background:var(--bub)}
+.m.me small{text-align:left}
+.m.bot .chips button{background:#fff}
+.file{gap:12px;background:#E8F7EE!important;color:#000!important;border:1px solid #BFE6CD}
+.file i{width:32px;height:32px;border-radius:6px;background:#2E8B57;color:#fff;font-style:normal;display:grid;place-items:center}
+.file em{font-style:normal;font-size:12px;color:#2E8B57;display:block}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chips button{border:1px solid var(--blue2);color:var(--blue2);background:#fff;border-radius:4px;padding:6px 12px;cursor:pointer;font-size:13px}
+.chips button:hover{background:var(--blue2);color:#fff}
+.typing{color:var(--mut);font-size:12.3px;height:20px;padding-inline-start:54px;text-align:right}
+.typing span{animation:bl 1.2s infinite;display:inline-block}
+.typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
+@keyframes bl{0%,60%,100%{opacity:.2}30%{opacity:1}}
+.compose{border-top:1px solid var(--line);height:84px;display:flex;align-items:center;gap:22px;margin:0 -28px 0 0;padding:0 50px 0 28px}
+.compose input[type=text]{flex:1;border:none;outline:none;font-size:14.4px;background:none}
+.compose input::placeholder{color:var(--mut)}
+.clip{cursor:pointer;display:grid;place-items:center}
+.send{width:49px;height:36px;background:var(--send);border:none;border-radius:2px;cursor:pointer;display:grid;place-items:center;flex:none}
+.send:disabled{opacity:.45;cursor:default}
+.send img{width:12px;height:16px;transform:scaleX(-1)}
+.login{position:fixed;inset:0;background:#F5F6FA;display:grid;place-items:center;z-index:9}
+.login form{background:#fff;width:400px;max-width:calc(100% - 32px);padding:44px 40px;border-radius:6px;box-shadow:0 2px 14px #15223214;text-align:center}
+.demo{position:fixed;bottom:calc(10px + env(safe-area-inset-bottom,0px));left:calc(10px + env(safe-area-inset-left,0px));background:#131523;color:#fff;font-size:11px;padding:5px 10px;border-radius:12px;z-index:60;opacity:.85;pointer-events:none}
+.login h1{font-size:26px;font-weight:700;color:var(--ink)}.login p{color:var(--sub);margin:6px 0 28px}
+.login label{display:block;text-align:right;font-size:13px;color:var(--sub);margin:14px 0 6px}
+.login input{width:100%;height:42px;border:1px solid #D9E1EC;border-radius:4px;padding:0 14px;outline:none}
+.login input:focus{border-color:var(--blue)}
+.login button{width:100%;height:44px;margin-top:26px;background:var(--blue);color:#fff;border:none;border-radius:4px;font-size:15px;cursor:pointer}
+.login .err{color:#E5484D;font-size:13px;height:16px;margin-top:10px}
+.foot{cursor:pointer}
+/* final design: blue sidebar card */
+body{background:#F5F8FC}
+.topbar,.brand{background:#fff}
+.side{background:var(--blue);border:none;border-radius:18px;margin:22px 0 22px 22px;padding:26px 14px 14px;overflow:auto}
+.nav,.nav.box,.nav.plain{background:none;color:#fff;font-size:15px;white-space:nowrap;gap:12px;padding:0 14px;height:42px;margin-bottom:6px;border-radius:22px}
+.nav img{filter:brightness(0) invert(1);width:20px;height:20px}
+.nav:not(.on):hover{background:#ffffff22}
+.nav.on{background:#fff;color:var(--blue)}
+.nav.on img{filter:brightness(0) saturate(100%) invert(30%) sepia(98%) saturate(3500%) hue-rotate(207deg)}
+.nav .bdg{margin-inline-start:auto;background:#fff;color:var(--blue);font-size:11px;border-radius:10px;padding:1px 8px}
+.nav.on .bdg{background:var(--blue);color:#fff}
+.sec{color:#ffffffb0}
+.foot{background:#fff;color:var(--ink)}
+.topbar img{background:var(--blue);border-radius:50%;padding:7px;width:32px;height:32px;opacity:1}
+.topbar img.act{box-shadow:0 0 0 3px #0073FF40}
+/* views */
+.profile,.home{grid-column:2/4;grid-row:2;overflow:auto;padding:36px 48px;display:none}
+.profile{background:#fff}
+.list,.chat{display:none}
+body.v-chat .list,body.v-chat .chat{display:flex}
+body.v-prof .profile,body.v-home .home{display:block}
+.chat{background:#fff}.list{background:#fff}
+/* dashboard */
+.dh{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:22px}
+.dh h2{font-size:24px;font-weight:700;color:var(--ink)}
+.dh small{display:block;color:var(--mut);font-size:11px;text-align:left}.dh b{font-size:13px;color:var(--ink)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.st{background:#fff;border-radius:12px;padding:16px 18px 18px;box-shadow:0 1px 3px #1522320d;display:flex;flex-direction:column;cursor:pointer;transition:.15s}
+.st:hover{transform:translateY(-2px);box-shadow:0 6px 16px #15223214}
+.st .r{display:flex;justify-content:space-between;align-items:center}
+.st .ico{width:34px;height:34px;border-radius:50%;background:#EEF4FF;display:grid;place-items:center}
+.st .ico img{width:18px;height:18px}
+.tag{font-size:10px;border-radius:8px;padding:1px 7px;background:#E5F8EF;color:#00AF67}
+.tag.red{background:#FDECEC;color:#E5484D}
+.st b{font-size:24px;font-weight:700;color:var(--ink);margin-top:14px}
+.st span{font-size:11px;color:var(--sub)}
+.st.blue{background:var(--blue)}.st.blue b,.st.blue span{color:#fff}.st.blue .ico{background:#ffffff26}.st.blue .tag{background:#ffffff33;color:#fff}
+.qh{display:flex;justify-content:space-between;align-items:center;margin:30px 0 14px}
+.qh h3,.card h3{font-size:16px;font-weight:700;color:var(--blue)}
+.card h3{color:var(--ink)}
+.qh .arr{display:flex;gap:6px;direction:ltr}.qh .arr button{border:none;background:none;cursor:pointer}
+.qa{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.q{background:#fff;border-radius:12px;padding:20px 10px 18px;text-align:center;cursor:pointer;box-shadow:0 1px 3px #1522320d;transition:.15s;font-size:12px;color:var(--sub)}
+.q:hover{transform:translateY(-2px);box-shadow:0 6px 16px #15223214;color:var(--ink)}
+.q i{width:48px;height:48px;border-radius:50%;background:#00AF67;display:grid;place-items:center;margin:0 auto 14px}
+.q i img{width:22px;height:22px}
+.bot2{display:grid;grid-template-columns:1fr 280px;gap:18px;margin-top:30px}
+.card{background:#fff;border-radius:12px;padding:20px 24px;box-shadow:0 1px 3px #1522320d}
+.tabs{display:flex;gap:34px;border-bottom:1px solid var(--line);margin-bottom:8px}
+.tabs button{background:none;border:none;padding:10px 4px;color:var(--sub);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs button.on{color:var(--blue);border-color:var(--blue);font-weight:500}
+.cat{display:grid;grid-template-columns:110px 1fr;gap:16px;padding:20px 0;border-bottom:1px solid var(--line);align-items:start}
+.cat:last-child{border:none}
+.cat .cn{text-align:center;font-weight:700;font-size:13px;color:var(--ink)}.cat .cn img{margin:0 auto 6px;width:30px;height:30px}
+.links{display:grid;grid-template-columns:repeat(3,1fr);gap:12px 18px}
+.links a{font-size:12px;color:var(--sub);cursor:pointer;text-decoration:none;line-height:1.4}
+.links a::before{content:'';display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--blue);margin-inline-end:6px;vertical-align:middle}
+.links a:hover{color:var(--blue)}
+.ra{display:flex;flex-direction:column;gap:14px;margin-top:14px}
+.ra div{display:flex;gap:10px;font-size:12px;color:var(--ink)}.ra small{display:block;color:var(--mut);font-size:10px}
+.ra img{width:16px;height:16px;margin-top:2px}
+.hl{display:flex;justify-content:space-between;align-items:center}.hl a{font-size:11px;color:var(--mut);cursor:pointer}
+.chart{margin-top:18px}.chart .big{font-size:20px;font-weight:700}.chart img{width:100%;margin-top:10px}
+.months{display:flex;justify-content:space-between;font-size:9px;color:var(--mut);margin-top:4px}
+@media(max-width:1100px){.stats{grid-template-columns:1fr 1fr}.qa{grid-template-columns:repeat(3,1fr)}.bot2{grid-template-columns:1fr}}
+@media(max-width:700px){.home{padding:20px 16px}.qa{grid-template-columns:1fr 1fr}.links{grid-template-columns:1fr}.cat{grid-template-columns:1fr}}
+.profile h2{font-size:24px;font-weight:700;color:var(--ink)}.profile .sub{color:var(--sub);margin:4px 0 28px}
+.pcard{border:1px solid var(--line);border-radius:8px;padding:28px;margin-bottom:22px;max-width:900px}
+.pcard h3{font-size:17px;font-weight:700;color:var(--ink);margin-bottom:20px}
+.phead{display:flex;align-items:center;gap:24px}
+.phead .big{width:110px;height:110px;border-radius:50%;object-fit:cover;border:3px solid var(--bub)}
+.phead b{font-size:20px;color:var(--ink);display:block}.phead span{color:var(--sub)}
+.btn{height:40px;padding:0 20px;border-radius:4px;border:1px solid var(--blue);background:#fff;color:var(--blue);cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.btn.pri{background:var(--blue);color:#fff}.btn.ghost{border-color:var(--line);color:var(--sub)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px 24px}
+.fld label{display:block;font-size:13px;color:var(--sub);margin-bottom:6px}
+.fld input,.fld select{width:100%;height:42px;border:1px solid #D9E1EC;border-radius:4px;padding:0 14px;outline:none;background:#fff}
+.fld input:focus,.fld select:focus{border-color:var(--blue)}
+.tg{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.tg:last-child{border:none}
+.sw{width:42px;height:24px;appearance:none;background:#D9E1EC;border-radius:12px;position:relative;cursor:pointer;transition:.2s}
+.sw:checked{background:var(--blue)}.sw::after{content:'';position:absolute;top:3px;right:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:.2s}
+.sw:checked::after{right:21px}
+.pact{display:flex;gap:12px;max-width:900px}
+.toast{position:fixed;bottom:28px;left:50%;transform:translate(-50%,20px);background:#131523;color:#fff;padding:12px 22px;border-radius:6px;opacity:0;transition:.3s;pointer-events:none;z-index:10}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:700px){.grid2{grid-template-columns:1fr}.profile{padding:20px 16px}.phead{flex-wrap:wrap}}
+@media(max-width:1100px){body{grid-template-columns:0 300px 1fr}.side,.brand{display:none}}
+@media(max-width:700px){body{grid-template-columns:0 0 1fr}.list{display:none}.m{max-width:92%}.chat{padding:0 14px}.topbar{padding:0 16px}}
+/* auth screens */
+.login{overflow:auto;padding:24px 0}
+.login form{display:none}.login form.on{display:block}
+.lnk{color:var(--blue);cursor:pointer;text-decoration:none}.lnk:hover{text-decoration:underline}.lnk.sm{font-size:12px}
+.login .alt{margin:18px 0 0;font-size:13px}
+.login .hint{font-size:12px;color:var(--mut);margin:8px 0 0}
+.or{display:flex;align-items:center;gap:10px;color:var(--mut);font-size:12px;margin:22px 0 12px}.or::before,.or::after{content:'';flex:1;height:1px;background:var(--line)}
+.login button.soc{background:#fff;color:var(--ink);border:1px solid #D9E1EC;margin-top:10px;height:40px;font-size:13px;direction:ltr}
+.login button.soc:hover{border-color:var(--blue)}
+.chk{display:flex!important;gap:8px;align-items:flex-start;font-size:12px!important;margin-top:16px!important}.chk input{width:auto;height:auto;margin-top:2px}
+.env{width:64px;height:64px;margin:0 auto 18px;border-radius:50%;background:var(--bub);color:var(--blue);display:grid;place-items:center;font-size:30px}
+/* reps list + add */
+.reps,.addrep{grid-column:2/4;grid-row:2;overflow:auto;padding:36px clamp(16px,3vw,48px);display:none}
+body.v-list .reps,body.v-add .addrep{display:block}
+.reps>*,.addrep>*{max-width:1400px;margin-left:auto;margin-right:auto}
+.bar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.bar input,.bar select{height:40px;border:1px solid #D9E1EC;border-radius:4px;padding:0 12px;background:#fff;outline:none}
+.bar input{flex:1;min-width:200px}.bar input:focus{border-color:var(--blue)}
+.tw{background:#fff;border-radius:12px;box-shadow:0 1px 3px #1522320d;overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:760px}
+th{text-align:right;color:var(--mut);font-weight:500;padding:14px 16px;border-bottom:1px solid var(--line);font-size:12px}
+td{padding:12px 16px;border-bottom:1px solid var(--line);color:var(--ink)}
+tr:last-child td{border:none}tbody tr:hover{background:#FAFBFD}
+td .who{display:flex;align-items:center;gap:10px}td .who img{width:32px;height:32px;border-radius:50%;object-fit:cover}
+.pill{font-size:11px;border-radius:10px;padding:2px 10px}.pill.ok{background:#E5F8EF;color:#00AF67}.pill.wait{background:#FFF4E0;color:#E79A0B}.pill.off{background:#F1F3F9;color:var(--sub)}
+.acts{display:flex;gap:6px}.acts button{width:30px;height:30px;border:1px solid var(--line);background:#fff;border-radius:6px;cursor:pointer;display:grid;place-items:center}
+.acts button:hover{border-color:var(--blue)}.acts img{width:16px;height:16px}
+.pager{display:flex;justify-content:space-between;align-items:center;padding:14px 4px;color:var(--sub);font-size:12px;flex-wrap:wrap;gap:10px}
+.pager div{display:flex;gap:4px}.pager button{min-width:30px;height:30px;border:1px solid var(--line);background:#fff;border-radius:6px;cursor:pointer;font-size:12px}
+.pager button.on{background:var(--blue);color:#fff;border-color:var(--blue)}.pager button:disabled{opacity:.4;cursor:default}
+.drop{border:2px dashed #D9E1EC;border-radius:8px;padding:26px;text-align:center;color:var(--sub);cursor:pointer;font-size:13px}
+.drop:hover,.drop.over{border-color:var(--blue);background:var(--bub)}
+.addgrid{display:grid;grid-template-columns:260px 1fr;gap:22px}
+@media(max-width:900px){.addgrid{grid-template-columns:1fr}}
+@media(max-width:700px){.reps,.addrep{grid-column:1/4;padding:20px 16px}}
+/* generic pages */
+.page{grid-column:2/4;grid-row:2;overflow:auto;padding:36px clamp(16px,3vw,48px);display:none}
+body.v-page .page{display:block}
+.page>*{max-width:1100px;margin-left:auto;margin-right:auto}
+.ph{display:flex;align-items:center;gap:14px;margin-bottom:6px;flex-wrap:wrap}
+.ph h2{font-size:24px;font-weight:700;color:var(--ink);flex:1}
+.ph .bk{background:none;border:none;color:var(--blue);cursor:pointer;font-size:14px}
+.page .sub{color:var(--sub);margin-bottom:22px}
+.res{background:var(--bub);border-radius:10px;padding:18px 20px;margin-top:20px;line-height:1.7}
+.res b.big{font-size:26px;color:var(--blue);display:block}
+.ok-box{text-align:center;padding:30px}.ok-box .env{background:#E5F8EF;color:#00AF67}
+.list2>div{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
+.list2>div:last-child{border:none}
+.list2 .grow{flex:1;min-width:0}.list2 small{display:block;color:var(--mut);font-size:12px;margin-top:2px}
+.chipsF{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.chipsF button{border:1px solid var(--line);background:#fff;border-radius:16px;padding:5px 14px;cursor:pointer;font-size:13px;color:var(--sub)}
+.chipsF button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.acc{border:1px solid var(--line);border-radius:8px;margin-bottom:10px;background:#fff}
+.acc summary{padding:14px 18px;cursor:pointer;font-weight:500;color:var(--ink);list-style:none;display:flex;justify-content:space-between}
+.acc summary::after{content:'+';color:var(--blue);font-size:18px}.acc[open] summary::after{content:'–'}
+.acc div{padding:0 18px 16px;color:var(--sub);line-height:1.7}
+.unread{width:8px;height:8px;border-radius:50%;background:var(--blue2);flex:none}
+.prog{height:8px;background:var(--line);border-radius:4px;overflow:hidden;margin:14px 0}.prog i{display:block;height:100%;width:0;background:var(--blue);transition:width .3s}
+.rate{font-size:40px;font-weight:700;color:var(--ink)}
+.cardsRow{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+/* popovers + modal */
+.pop{position:fixed;top:78px;left:24px;width:340px;max-width:calc(100% - 32px);max-height:70vh;overflow:auto;background:#fff;border-radius:12px;box-shadow:0 10px 40px #15223233;z-index:40;display:none;padding:8px 0}
+.pop.on{display:block}
+.pop h4{display:flex;justify-content:space-between;align-items:center;padding:10px 18px;font-size:15px;color:var(--ink)}
+.pop h4 a{font-size:12px;color:var(--blue);cursor:pointer;font-weight:400}
+.pop .it{display:flex;gap:10px;padding:12px 18px;cursor:pointer;font-size:13px;color:var(--ink);align-items:flex-start}
+.pop .it:hover{background:#F5F8FC}.pop .it small{display:block;color:var(--mut);font-size:11px;margin-top:2px}
+.pop .it .grow{flex:1}
+.topbar{position:relative}
+.nb{position:absolute;width:9px;height:9px;border-radius:50%;background:#E5484D;border:2px solid #fff;display:none}
+.modal{position:fixed;inset:0;background:#13152399;z-index:50;display:none;place-items:center;padding:16px}
+.modal.on{display:grid}
+.mbox{background:#fff;border-radius:14px;width:420px;max-width:100%;padding:28px;text-align:center;position:relative}
+.mbox .x{position:absolute;top:12px;left:14px;background:none;border:none;font-size:20px;cursor:pointer;color:var(--mut)}
+.call{background:#131523;color:#fff}.call img{width:96px;height:96px;border-radius:50%;object-fit:cover;margin:10px auto 16px;border:3px solid #ffffff30}
+.call .cb{display:flex;justify-content:center;gap:18px;margin-top:24px}
+.call .cb button{width:52px;height:52px;border-radius:50%;border:none;cursor:pointer;font-size:20px;background:#ffffff22;color:#fff}
+.call .cb button.end{background:#E5484D}.call .cb button.off{background:#fff;color:#131523}
+/* ===== responsive ===== */
+.home>*{max-width:1400px;margin-left:auto;margin-right:auto}
+.home{padding:36px clamp(16px,3vw,48px)}
+.menuBtn,.backBtn,.mBrand,.scrim{display:none}
+.menuBtn{margin-left:auto;background:none;border:none;cursor:pointer;font-size:26px;color:var(--blue);line-height:1}
+.mBrand{color:var(--blue);font-weight:700;font-size:19px;direction:rtl}
+.backBtn{background:none;border:none;font-size:22px;color:var(--blue);cursor:pointer;padding:0 4px}
+@media(max-width:1100px){
+  .menuBtn,.mBrand{display:block}
+  .side{display:flex;position:fixed;top:0;right:0;bottom:0;width:270px;margin:0;border-radius:18px 0 0 18px;z-index:30;transform:translateX(105%);transition:transform .25s}
+  body.menu .side{transform:none}
+  body.menu .scrim{display:block;position:fixed;inset:0;background:#13152366;z-index:29}
+  .topbar{gap:14px}
+}
+@media(max-width:700px){
+  body{grid-template-rows:64px 1fr}
+  .topbar{padding:0 16px;gap:10px}.topbar img{width:30px;height:30px;padding:6px}
+  .home,.profile{grid-column:1/4;padding:20px 16px}
+  .dh{flex-wrap:wrap;gap:8px}.dh h2{font-size:20px}
+  .stats{grid-template-columns:1fr 1fr;gap:12px}.st b{font-size:20px}
+  .qa{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px}.q{min-width:140px;scroll-snap-align:start}
+  .qh .arr{display:none}
+  .tabs{gap:18px;overflow-x:auto}.tabs button{white-space:nowrap}
+  body.v-chat .list{display:flex;grid-column:1/4;border:none}
+  body.v-chat .chat{display:none}
+  body.v-chat.open .list{display:none}
+  body.v-chat.open .chat{display:flex;grid-column:1/4}
+  .backBtn{display:block}
+  .lh{padding:20px 16px 0}.search{margin:16px}.th{padding:0 16px}
+  .ch{height:64px}.msgs{padding:16px 0}.m small{margin:8px 12px 10px}
+  .compose{margin:0 -14px;padding:0 14px;height:70px;gap:14px}
+}
+</style>
+
+
+</head>
+<body>
+<div class="login" id="login"><form id="lf" class="on" autocomplete="off">
+  <img src="assets/mark.svg" alt="" style="width:64px;height:64px;border-radius:50%;margin:0 auto 16px">
+  <h1>התחברות</h1><p>ברוכים הבאים לפורטל המייצגים<br><small style="color:var(--mut)">פרויקט עיצוב להדגמה · אפשר להיכנס עם כל שם וסיסמה</small></p>
+  <label for="un">שם משתמש</label><input id="un" placeholder="הזן/י שם משתמש">
+  <label for="pw">סיסמה</label><input id="pw" type="password" placeholder="הזן/י סיסמה">
+  <a class="lnk sm" data-auth="pf" style="display:block;text-align:left;margin-top:8px">שכחת סיסמה?</a>
+  <div class="err" id="err"></div><button>התחברות</button>
+  <p class="alt">אין לך חשבון? <a class="lnk" data-auth="rf">הרשמה</a></p>
+  <div class="or">או התחברות באמצעות</div>
+  <button type="button" class="soc" data-soc="Google"><b style="color:#4285F4">G</b> Continue with Google</button>
+  <button type="button" class="soc" data-soc="Facebook"><b style="color:#1877F2">f</b> Continue with Facebook</button></form>
+
+  <form id="rf" autocomplete="off">
+  <h1>צור חשבון</h1><p>יש לך חשבון? <a class="lnk" data-auth="lf">התחברות</a></p>
+  <label>שם מלא</label><input id="rName" placeholder="שם פרטי ומשפחה">
+  <label>אימייל</label><input id="rMail" type="email" placeholder="הזן/י כתובת מייל">
+  <label>סיסמה</label><input id="rPw" type="password" placeholder="לפחות 6 תווים">
+  <label class="chk"><input type="checkbox" id="rOk"> קראתי ואני מסכים/ה לתנאי השימוש ומדיניות הפרטיות</label>
+  <div class="err" id="rErr"></div><button>צור חשבון</button>
+  <div class="or">או הרשמה באמצעות</div>
+  <button type="button" class="soc" data-soc="Google"><b style="color:#4285F4">G</b> Continue with Google</button>
+  <button type="button" class="soc" data-soc="Facebook"><b style="color:#1877F2">f</b> Continue with Facebook</button></form>
+
+  <form id="cf" autocomplete="off">
+  <h1>אימות מייל</h1><p>שלחנו קוד אימות בן 4 ספרות אל<br><b id="cMail"></b></p>
+  <label>קוד אימות</label><input id="cCode" inputmode="numeric" maxlength="4" placeholder="הזן/י קוד" style="text-align:center;letter-spacing:8px;font-size:18px">
+  <p class="hint">בגרסת ההדגמה הקוד הוא <b>1234</b></p>
+  <div class="err" id="cErr"></div><button>אימות</button>
+  <p class="alt">לא קיבלת קוד? <a class="lnk" id="resend">שליחה חוזרת</a></p></form>
+
+  <form id="df">
+  <div class="env">✉</div><h1>כמעט סיימנו!</h1><p>החשבון שלך אומת בהצלחה.<br>אפשר להיכנס למערכת.</p>
+  <button>כניסה למערכת</button></form>
+
+  <form id="pf" autocomplete="off">
+  <h1>איפוס סיסמה</h1><p>נעזור לך לאפס את הסיסמה</p>
+  <label>אימייל</label><input id="pMail" type="email" placeholder="הזן/י כתובת מייל">
+  <div class="err" id="pErr"></div><button>איפוס סיסמה</button>
+  <p class="alt">נזכרת בסיסמה? <a class="lnk" data-auth="lf">חזרה להתחברות</a></p></form>
+
+  <form id="sf">
+  <div class="env">✉</div><h1>בדוק/י את המייל</h1><p>שלחנו קישור לאיפוס הסיסמה אל<br><b id="sMail"></b></p>
+  <button>חזרה להתחברות</button>
+  <p class="alt">לא קיבלת מייל? <a class="lnk" id="resend2">שליחה חוזרת</a></p></form>
+</div>
+<header class="topbar">
+  <img src="assets/d/Calendar2.svg" alt="יומן" title="יומן"><img src="assets/d/VuesaxLinearMessageText.svg" alt="שיחות" title="שיחות" id="topChat"><img src="assets/d/Notification.svg" alt="התראות" title="התראות">
+  <span class="mBrand" style="margin-left:auto">פורטל מייצגים</span><button class="menuBtn" id="menuBtn" style="margin-left:0" aria-label="תפריט">☰</button>
+</header>
+<div class="brand"><img src="assets/mark.svg" alt=""><b>פורטל מייצגים</b></div>
+
+<aside class="side">
+  <div class="nav on" id="navHome"><img class="ic" src="assets/n-home.svg" alt="">דף הבית</div>
+  <div class="nav box" id="navList"><img class="ic" src="assets/n-users.svg" alt="">רשימת מייצגים<span class="bdg" id="repCount">146</span></div>
+  <div class="nav box"><img class="ic" src="assets/n-forms.svg" alt="">טפסים</div>
+  <div class="nav box"><img class="ic" src="assets/n-info.svg" alt="">מידע חשוב</div>
+  <div class="nav box"><img class="ic" src="assets/n-dollar.svg" alt="">שער הדולר</div>
+  <div class="nav box"><img class="ic" src="assets/n-dollar.svg" alt="">שער יציג</div>
+  <div class="nav box"><img class="ic" src="assets/d/VuesaxLinearCall.svg" alt="" style="object-fit:contain">טלפונים שימושיים</div>
+  <div class="sec">הגדרות</div>
+  <div class="nav plain" id="navSet"><img class="ic" src="assets/n-settings.svg" alt="">הגדרות מערכת</div>
+  <div class="nav plain"><img class="ic" src="assets/n-help.svg" alt="">עזרה ותמיכה</div>
+  <div class="foot" id="foot" title="התנתקות"><img src="assets/admin.png" alt=""><div><span id="uname">ישראל ישראלי</span><br>מייצג/ת · התנתקות</div></div>
+</aside>
+
+<section class="list">
+  <div class="lh"><b>שיחות</b><span id="clock"></span></div>
+  <input class="search" id="search" placeholder="חיפוש....">
+  <div class="threads" id="threads"></div>
+</section>
+
+<section class="home" id="home">
+  <div class="dh"><h2>פורטל מייצגים</h2><div><small>תאריך</small><b id="today"></b></div></div>
+  <div class="stats">
+    <div class="st" data-go="list"><div class="r"><span class="ico"><img src="assets/d/VuesaxLinearProfile2User.svg" alt=""></span><span class="tag">12+</span></div><b>248</b><span>מייצגים פעילים</span></div>
+    <div class="st" data-ask="סטטוס תיק"><div class="r"><span class="ico"><img src="assets/d/Book1.svg" alt=""></span><span class="tag">24%+</span></div><b>1,847</b><span>דוחות הוגשו החודש</span></div>
+    <div class="st blue" data-go="chat"><div class="r"><span class="ico"><img src="assets/d/VuesaxLinearClock.svg" alt=""></span><span class="tag">5-</span></div><b>23</b><span>ממתינים לטיפול</span></div>
+    <div class="st" data-ask="דבר עם נציג"><div class="r"><span class="ico" style="color:var(--blue);font-weight:700">!</span><span class="tag red">דחוף</span></div><b>7</b><span>דורש תשומת לב</span></div>
+  </div>
+  <div class="qh"><h3>פעולות מהירות</h3><div class="arr"><button id="qPrev"><img src="assets/d/Overlay.svg" alt="הקודם"></button><button id="qNext" style="transform:scaleX(-1)"><img src="assets/d/Overlay.svg" alt="הבא"></button></div></div>
+  <div class="qa" id="qa">
+    <div class="q" data-ask="אני רוצה להגיש בקשת רישום ייצוג"><i><img src="assets/d/Book.svg" alt=""></i>בקשת רישום ייצוג</div>
+    <div class="q" data-ask="שאלה על מע&quot;מ"><i><img src="assets/d/VuesaxLinearBank.svg" alt=""></i>מע"מ - מערכת גבייה</div>
+    <div class="q" data-ask="איך ממלאים טופס שידור דוח שנתי"><i><img src="assets/d/Send.svg" alt=""></i>שידור דוח שנתי (OPCN)</div>
+    <div class="q" data-ask="סטטוס תיק"><i><img src="assets/d/FolderAdd.svg" alt=""></i>פתיחת תיק (מפתח)</div>
+    <div class="q" data-ask="העלאת מסמך"><i><img src="assets/d/VuesaxOutlineShieldTick.svg" alt=""></i>מגן - מערכת ניכויים חדשה</div>
+  </div>
+  <div class="bot2">
+    <div class="card">
+      <div class="tabs" id="tabs"><button class="on">מס הכנסה</button><button>ממסיק</button><button>ניכויים</button><button>מכס</button></div>
+      <div id="cats"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:18px">
+      <div class="card"><div class="hl"><h3>פעולות אחרונות</h3><a>הצג הכל</a></div>
+        <div class="ra" id="ra"></div></div>
+      <div class="card chart"><small style="color:var(--mut);font-size:11px">תשלומי מס הכנסה 2026</small>
+        <div class="hl"><span class="big">1.24M ₪</span><span class="tag">12.4%+</span></div>
+        <img src="assets/d/Group3478.svg" alt="גרף תשלומים">
+        <div class="months"><span>ינו</span><span>פבר</span><span>מרץ</span><span>אפר</span><span>מאי</span><span>יונ</span><span>יול</span><span>אוג</span><span>ספט</span><span>אוק</span></div></div>
+    </div>
+  </div>
+</section>
+<section class="reps" id="reps">
+  <div class="dh"><h2>רשימת מייצגים</h2><button class="btn pri" id="goAdd" type="button">+ הוספת מייצג</button></div>
+  <div class="bar"><input id="rq" placeholder="חיפוש לפי שם, אימייל, תיק..."><select id="rs"><option value="">כל הסטטוסים</option><option>פעיל</option><option>ממתין</option><option>לא פעיל</option></select><select id="rt"><option value="">כל הסוגים</option><option>יועץ/ת מס</option><option>רואה/ת חשבון</option><option>עורך/ת דין</option></select></div>
+  <div class="tw"><table><thead><tr><th>שם</th><th>אימייל</th><th>טלפון</th><th>מספר תיק</th><th>סוג</th><th>סטטוס</th><th>פעולות</th></tr></thead><tbody id="rbody"></tbody></table></div>
+  <div class="pager"><span id="rinfo"></span><div id="rpg"></div></div>
+</section>
+<section class="addrep" id="addrep">
+  <div class="dh"><h2>הוספת מייצג</h2><button class="btn ghost" type="button" data-back>חזרה לרשימה</button></div>
+  <div class="addgrid">
+    <div class="pcard" style="margin:0;text-align:center"><h3>תמונה ומסמכים</h3>
+      <img id="aImg" src="assets/man.png" alt="" style="width:110px;height:110px;border-radius:50%;object-fit:cover;margin:0 auto 14px">
+      <label class="btn" style="margin-bottom:18px">העלאת תמונה<input type="file" id="aPic" accept="image/*" hidden></label>
+      <label class="drop" id="drop">📎 גרירת ייפוי כוח לכאן<br>או לחיצה לבחירת קובץ<input type="file" id="aDoc" hidden></label>
+      <p id="aDocName" style="font-size:12px;color:#00AF67;margin-top:10px"></p></div>
+    <div class="pcard" style="margin:0"><h3>פרטי המייצג</h3><div class="grid2">
+      <div class="fld"><label>שם פרטי *</label><input id="aF"></div>
+      <div class="fld"><label>שם משפחה *</label><input id="aL"></div>
+      <div class="fld"><label>תעודת זהות *</label><input id="aId" inputmode="numeric" maxlength="9" placeholder="9 ספרות"></div>
+      <div class="fld"><label>מספר תיק</label><input id="aCase" inputmode="numeric" placeholder="נוצר אוטומטית אם ריק"></div>
+      <div class="fld"><label>אימייל *</label><input id="aMail" type="email"></div>
+      <div class="fld"><label>טלפון *</label><input id="aPhone" type="tel" placeholder="050-0000000"></div>
+      <div class="fld"><label>סוג מייצג</label><select id="aType"><option>יועץ/ת מס</option><option>רואה/ת חשבון</option><option>עורך/ת דין</option></select></div>
+      <div class="fld"><label>סטטוס</label><select id="aSt"><option>ממתין</option><option>פעיל</option><option>לא פעיל</option></select></div>
+    </div>
+    <div class="pact" style="margin-top:24px"><button class="btn pri" id="aSave" type="button">שמירת מייצג</button><button class="btn ghost" type="button" data-back>ביטול</button></div></div>
+  </div>
+</section>
+<section class="page" id="page"></section>
+<div class="pop" id="pop"></div>
+<div class="modal" id="modal"><div class="mbox" id="mbox"></div></div>
+<section class="profile" id="profile">
+  <h2>הפרופיל שלי</h2><p class="sub">עדכון תמונה, פרטים אישיים והגדרות חשבון</p>
+  <div class="pcard"><div class="phead">
+    <img class="big" id="pImg" src="assets/man.png" alt="">
+    <div style="flex:1"><b id="pName">ישראל ישראלי</b><span id="pRole">יועץ/ת מס</span></div>
+    <label class="btn">העלאת תמונה<input type="file" id="pFile" accept="image/*" hidden></label>
+    <button class="btn ghost" id="pDel" type="button">הסרה</button>
+  </div></div>
+  <div class="pcard"><h3>פרטים אישיים</h3><div class="grid2">
+    <div class="fld"><label>שם מלא</label><input id="fName"></div>
+    <div class="fld"><label>שם משתמש</label><input id="fUser" disabled></div>
+    <div class="fld"><label>אימייל</label><input id="fMail" type="email" placeholder="name@example.co.il"></div>
+    <div class="fld"><label>טלפון נייד</label><input id="fPhone" type="tel" placeholder="050-0000000"></div>
+    <div class="fld"><label>תעודת זהות</label><input id="fId" inputmode="numeric" maxlength="9" placeholder="9 ספרות"></div>
+    <div class="fld"><label>מספר רישיון מייצג</label><input id="fLic" placeholder="לדוגמה 48211"></div>
+    <div class="fld"><label>תפקיד</label><select id="fRole"><option>יועץ/ת מס</option><option>רואה/ת חשבון</option><option>עורך/ת דין</option><option>מנהל/ת חשבונות</option></select></div>
+    <div class="fld"><label>כתובת המשרד</label><input id="fAddr" placeholder="רחוב, מספר, עיר"></div>
+  </div></div>
+  <div class="pcard"><h3>שינוי סיסמה</h3><div class="grid2">
+    <div class="fld"><label>סיסמה חדשה</label><input id="fPw1" type="password"></div>
+    <div class="fld"><label>אימות סיסמה</label><input id="fPw2" type="password"></div>
+  </div></div>
+  <div class="pcard"><h3>התראות</h3>
+    <div class="tg">הודעה חדשה בצ'אט<input type="checkbox" class="sw" checked></div>
+    <div class="tg">עדכון סטטוס בתיק לקוח<input type="checkbox" class="sw" checked></div>
+    <div class="tg">תזכורות למועדי דיווח<input type="checkbox" class="sw"></div>
+  </div>
+  <div class="pact"><button class="btn pri" id="pSave" type="button">שמירת שינויים</button><button class="btn ghost" id="pBack" type="button">חזרה לשיחות</button></div>
+</section>
+<div class="toast" id="toast"></div>
+
+<main class="chat">
+  <div class="ch"><button class="backBtn" id="backBtn" aria-label="חזרה לרשימה">→</button><span class="g"></span><b id="who"></b>
+    <div class="tools">
+      <button id="dl" title="הורדת תמלול"><img class="ic" src="assets/i-settings.svg" alt=""></button>
+      <button title="שיחת וידאו"><img class="ic" src="assets/i-video.svg" alt=""></button>
+      <button title="פרופיל"><img class="ic" src="assets/i-user.svg" alt=""></button>
+    </div></div>
+  <div class="msgs" id="msgs"></div>
+  <div class="typing" id="typing"></div>
+  <form class="compose" id="form">
+    <input type="text" id="inp" placeholder="ההודעה שלך..." autocomplete="off">
+    <label class="clip" title="העלאת מסמך"><img class="ic" src="assets/clip.svg" alt=""><input type="file" id="file" hidden></label>
+    <button class="send" id="send" disabled title="שליחה"><img src="assets/send.svg" alt=""></button>
+  </form>
+</main>
+
+<script>
+const $=s=>document.querySelector(s);
+const now=()=>new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+const BOT='דניאל', BOTIMG='assets/woman.png', MEIMG='assets/man.png';
+const MENU=['בדיקת חוב','החזר מס','פריסת תשלומים','העלאת מסמך','סטטוס תיק','דבר עם נציג'];
+
+const KB=[
+ [['שלום','היי','הי','בוקר','ערב'],'שלום, איך אפשר לעזור לך היום?',MENU],
+ [['חוב','חייב','יתרה'],'כדי לבדוק חוב אצטרך מספר תיק או ת.ז של הלקוח (9 ספרות).\nאפשר גם להיכנס לאזור האישי באתר ולבדוק את סטטוס התשלומים.',null],
+ [['החזר','זיכוי','החזרים'],'החזר מס מגישים דרך טופס 135 (דוח לבקשת החזר).\nזמן טיפול ממוצע: עד 90 יום מקליטת הבקשה.\nרוצה שאבדוק סטטוס של בקשה קיימת?',['כן, בדיקת סטטוס','איך ממלאים 135?']],
+ [['135','טופס','ממלאים'],'למילוי טופס 135 צריך:\n• טופסי 106 מכל המעסיקים\n• אישורי ניכוי במקור (אם יש)\n• קבלות על תרומות / ביטוח חיים\nאפשר להעלות אותם כאן ואבדוק שהכל תקין.',['העלאת מסמך']],
+ [['פריסה','פריסת','תשלומים','לפרוס','לתשלומים'],'ניתן להגיש בקשה לפריסת חוב דרך המערכת המקוונת או מול פקיד השומה.\nבדרך כלל אפשר לפרוס עד 12 תשלומים, ובאישור מיוחד עד 36.\nלפתוח עבורך בקשה?',['כן, פתח בקשה','לא תודה']],
+ [['פתח בקשה'],'✅ נפתחה בקשה לפריסת תשלומים. מספר פנייה: AF-#'+(800+Math.floor(Math.random()*199))+'.\nפקיד השומה יחזור אליך תוך 3 ימי עסקים.',MENU],
+ [['סטטוס','מצב','תיק','בדיקת'],'כדי לבדוק סטטוס תיק, כתוב/י מספר תיק בן 9 ספרות.',null],
+ [['מסמך','קובץ','להעלות','אישור'],'אפשר להעלות מסמך בלחיצה על סמל האטב למטה. אבדוק אותו ואעביר לתיק.',null],
+ [['נציג','אנושי','בן אדם','פקיד'],'אני מעביר את השיחה לנציג אנושי. זמן המתנה משוער: כ-4 דקות. בינתיים אפשר להמשיך לכתוב כאן.',null],
+ [['מע"מ','מעמ','מע״מ'],'דיווח מע"מ מגישים עד ה-15 בחודש שאחרי תקופת הדיווח (חד-חודשי או דו-חודשי).\nעל איחור יש קנס ופיגורים.',MENU],
+ [['ייצוג','רישום'],'בקשת רישום ייצוג מגישים עם ייפוי כוח חתום (טופס 2279) וצילום ת.ז של הלקוח.\nאפשר להעלות את המסמכים כאן, ואפתח את הבקשה.',['העלאת מסמך','דבר עם נציג']],
+ [['דוח','דיווח','שידור','סימולטור','שבח','נקודות זיכוי','ניכוי','מכס','יבוא','יצוא','106','102'],'פתחתי עבורך את הנושא. אפשר למלא ולשדר אותו במערכת המקוונת, או להעלות כאן את הקבצים ואבדוק אותם.\nצריך עזרה במשהו ספציפי?',['העלאת מסמך','דבר עם נציג','סטטוס תיק']],
+ [['תודה','מעולה','סבבה'],'בשמחה! יש עוד משהו שאפשר לעזור בו?',MENU],
+];
+function answer(t){
+  t=t.trim();const id=t.replace(/\D/g,'');
+  if(id.length===9){const debt=(parseInt(id.slice(-4))*3.7%9000).toFixed(0);
+    return [`תיק ${id}:\n• סטטוס: פעיל, דוח 2025 נקלט\n• יתרת חוב: ₪${Number(debt).toLocaleString('he-IL')}\n• החזר צפוי: אין כרגע\nרוצה לפרוס את החוב?`,['פריסת תשלומים','דבר עם נציג']]}
+  if(/^[\d\s-]+$/.test(t)) return ['מספר תיק צריך להיות בן 9 ספרות בדיוק. אפשר לנסות שוב?',null];
+  for(const [k,a,c] of KB) if(k.some(w=>t.includes(w))) return [a,c];
+  return ['לא בטוח שהבנתי. אפשר לבחור נושא:',MENU];
+}
+
+const threads=Array.from({length:8},(_,i)=>({n:'חני לוין',unread:true,msgs:[{who:'me',t:'שלום, מה סטטוס התיק שלי?',time:'10:50 AM'}]}));
+threads[1].msgs=[{who:'bot',t:'שלום, איך אפשר לעזור לך היום?',time:now(),chips:MENU}];
+let cur=1;threads[1].unread=false;
+
+function esc(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
+function renderThreads(){
+  const q=$('#search').value.trim();
+  $('#threads').innerHTML=threads.map((th,i)=>{
+    const last=th.msgs[th.msgs.length-1];const prev=last.file?'📎 '+last.file:last.t;
+    if(q&&!(th.n+prev).includes(q))return'';
+    return `<div class="th${i===cur?' on':''}" data-i="${i}"><div class="pic"><img class="face" src="${MEIMG}" alt=""><img class="st" src="assets/status.svg" alt=""></div>
+    <div class="tx"><b>${th.n}</b>${th.unread?'<span class="dot"></span>':''}<p>${esc(prev.split('\n')[0])}</p></div><time>${last.time}</time></div>`}).join('');
+}
+function renderMsgs(){
+  const th=threads[cur];$('#who').textContent=th.n;
+  $('#msgs').innerHTML=th.msgs.map((m,j)=>{
+    const body=m.file?`<div class="b file"><i>📄</i><div>${esc(m.file)}<em>✓ הקובץ התקבל בהצלחה ונסרק · ${m.size}</em></div></div>`:`<div class="b">${esc(m.t)}</div>`;
+    const chips=m.chips&&j===th.msgs.length-1?`<div class="chips">${m.chips.map(c=>`<button type="button">${c}</button>`).join('')}</div>`:'';
+    return `<div class="m ${m.who}"><img src="${m.who==='bot'?BOTIMG:(USERIMG||MEIMG)}" alt=""><div>${body}${chips}<small>${m.time}</small></div></div>`}).join('');
+  $('#msgs').scrollTop=1e9;
+}
+function push(m){threads[cur].msgs.push({time:now(),...m});renderMsgs();renderThreads()}
+let busy=false;
+function typing(on,txt){$('#typing').innerHTML=on?`${BOT} ${txt||'מקליד/ה'} <span>●</span><span>●</span><span>●</span>`:''}
+function botReply(text){busy=true;typing(1);const [a,c]=answer(text);
+  setTimeout(()=>{typing(0);push({who:'bot',t:a,chips:c});busy=false},700+Math.min(a.length*12,1600))}
+function send(text){if(!text.trim()||busy)return;push({who:'me',t:text});botReply(text)}
+
+$('#form').onsubmit=e=>{e.preventDefault();send($('#inp').value);$('#inp').value='';$('#send').disabled=true};
+$('#inp').oninput=e=>$('#send').disabled=!e.target.value.trim();
+$('#msgs').onclick=e=>{if(e.target.matches('.chips button'))send(e.target.textContent)};
+$('#threads').onclick=e=>{const el=e.target.closest('.th');if(!el)return;cur=+el.dataset.i;threads[cur].unread=false;renderThreads();renderMsgs();$('#inp').focus()};
+$('#search').oninput=renderThreads;
+$('#file').onchange=e=>{const f=e.target.files[0];if(!f)return;
+  push({who:'me',file:f.name,size:(f.size/1048576).toFixed(1)+'MB'});e.target.value='';
+  busy=true;typing(1,'בודק/ת את המסמך');
+  setTimeout(()=>{typing(0);push({who:'bot',t:`קיבלתי את "${f.name}" ✅\nהמסמך נסרק ותויק בתיק הלקוח. יש עוד מסמכים להעלות?`,chips:['כן, עוד מסמך','לא, זה הכל']});busy=false},1800)};
+$('#dl').onclick=()=>{const th=threads[cur];
+  const txt=th.msgs.map(m=>`[${m.time}] ${m.who==='bot'?BOT:(USER||'אני')}: ${m.file?'📎 '+m.file:m.t}`).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['﻿'+txt],{type:'text/plain'}));a.download=`תמלול - ${th.n}.txt`;a.click()};
+let USER='';
+$('#lf').onsubmit=e=>{e.preventDefault();const u=$('#un').value.trim(),p=$('#pw').value;
+  if(!u||!p){$('#err').textContent='יש למלא שם משתמש וסיסמה';return}
+  if(p.length<4){$('#err').textContent='הסיסמה צריכה להיות לפחות 4 תווים';return}
+  USER=u;$('#uname').textContent=u;threads[cur].msgs=[{who:'bot',t:`שלום ${u}, איך אפשר לעזור לך היום?`,time:now(),chips:MENU}];
+  renderMsgs();renderThreads();$('#login').style.display='none';setView('home')};
+document.body.className='v-home';
+$('#foot').onclick=()=>location.reload();
+let USERIMG='';
+const toast=t=>{const el=$('#toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2200)};
+function setView(v){
+  document.body.className='v-'+v;
+  $('#navSet').classList.toggle('on',v==='prof');$('#navHome').classList.toggle('on',v==='home');$('#navList').classList.toggle('on',v==='list'||v==='add');
+  if(v==='list')renderReps();
+  $('#topChat').classList.toggle('act',v==='chat');
+  if(v==='prof'){$('#fName').value=$('#fName').value||USER;$('#fUser').value=USER;$('#pName').textContent=$('#fName').value||USER}
+  if(v==='chat')setTimeout(()=>$('#inp').focus(),50);
+}
+function openChatWith(text){setView('chat');if(text)setTimeout(()=>send(text),250)}
+$('#navSet').onclick=()=>setView('prof');
+$('#navHome').onclick=()=>setView('home');
+$('#pBack').onclick=()=>setView('chat');
+$('#topChat').onclick=()=>setView('chat');
+$('#home').onclick=e=>{const el=e.target.closest('[data-ask],[data-go]');if(!el)return;
+  if(el.dataset.ask)openChatWith(el.dataset.ask);else setView(el.dataset.go)};
+$('#today').textContent=new Date().toLocaleDateString('he-IL',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+const CATS={
+ 'מס הכנסה':[['דוחות ודיווחים',['אישור הגשה מקוון בניכויים 126/856','דיווח הכנסות משכר דירה בארץ','דיווח מסכם לבעל עסק זעיר','שידור דוחות 126/856','שידור דוח שנתי 1214','דוח 1301']],['מידע',['אישור הגשה מקוון בניכויים 126/856','דיווח הכנסות משכר דירה בארץ','דיווח מסכם לבעל עסק זעיר']],['סימולטורים',['סימולטור החזר מס','חישוב מס שבח','מחשבון נקודות זיכוי']]],
+ 'ממסיק':[['דוחות ודיווחים',['דיווח 102 חודשי','טופס 106 שנתי','דוח 126 למעסיקים']],['מידע',['תיאום מס','שווי רכב','הפרשות לפנסיה']]],
+ 'ניכויים':[['דוחות ודיווחים',['ניכוי במקור לספקים','אישור פטור מניכוי','דוח 856 שנתי']],['מידע',['שיעורי ניכוי','בקשה להקטנת ניכוי']]],
+ 'מכס':[['דוחות ודיווחים',['הצהרת יבוא','רשימון יצוא','שחרור טובין']],['מידע',['תעריפי מכס','יבוא אישי','פטורים']]]};
+function renderCats(k){$('#cats').innerHTML=CATS[k].map(([n,l])=>`<div class="cat"><div class="cn"><img src="assets/d/Background.svg" alt="">${n}</div><div class="links">${l.map(x=>`<a data-ask="${x}">${x}</a>`).join('')}</div></div>`).join('')}
+$('#tabs').onclick=e=>{if(e.target.tagName!=='BUTTON')return;$('#tabs .on').classList.remove('on');e.target.classList.add('on');renderCats(e.target.textContent)};
+renderCats('מס הכנסה');
+$('#ra').innerHTML=[['Ellipse28','דוח הקופה הוגש בהצלחה','היום 10:30'],['Book1','דוח 1301 נשלח לבדיקה','היום 09:12'],['Clock','בקשת פריסה ממתינה לאישור','אתמול 16:40']].map(([i,t,s])=>`<div><img src="assets/d/${i}.svg" alt=""><span>${t}<small>${s} · ע"י ישראל ישראלי</small></span></div>`).join('');
+$('#qNext').onclick=()=>$('#qa').append($('#qa').firstElementChild);
+$('#qPrev').onclick=()=>$('#qa').prepend($('#qa').lastElementChild);
+document.body.insertAdjacentHTML('beforeend','<div class="scrim" id="scrim"></div>');
+$('#menuBtn').onclick=()=>document.body.classList.toggle('menu');
+$('#scrim').onclick=()=>document.body.classList.remove('menu');
+$('.side').addEventListener('click',e=>{if(e.target.closest('.nav'))document.body.classList.remove('menu')});
+$('#threads').addEventListener('click',e=>{if(e.target.closest('.th'))document.body.classList.add('open')});
+$('#backBtn').onclick=()=>document.body.classList.remove('open');
+/* ---- auth flow ---- */
+const okMail=m=>/^\S+@\S+\.\S+$/.test(m);
+function auth(id){document.querySelectorAll('.login form').forEach(f=>f.classList.toggle('on',f.id===id));document.querySelectorAll('.login .err').forEach(e=>e.textContent='');const i=$('#'+id+' input');i&&i.focus()}
+$('#login').addEventListener('click',e=>{const a=e.target.closest('[data-auth]');if(a){e.preventDefault();auth(a.dataset.auth)}
+  const s=e.target.closest('[data-soc]');if(s)enter('משתמש/ת '+s.dataset.soc)});
+function enter(name){USER=name;$('#uname').textContent=name;threads[cur].msgs=[{who:'bot',t:`שלום ${name}, איך אפשר לעזור לך היום?`,time:now(),chips:MENU}];
+  renderMsgs();renderThreads();$('#login').style.display='none';setView('home')}
+let pending=null;
+$('#rf').onsubmit=e=>{e.preventDefault();const n=$('#rName').value.trim(),m=$('#rMail').value.trim(),p=$('#rPw').value,er=$('#rErr');
+  if(!n)return er.textContent='יש למלא שם מלא';if(!okMail(m))return er.textContent='כתובת המייל לא תקינה';
+  if(p.length<6)return er.textContent='הסיסמה צריכה לפחות 6 תווים';if(!$('#rOk').checked)return er.textContent='יש לאשר את תנאי השימוש';
+  pending={n,m};$('#cMail').textContent=m;$('#cCode').value='';auth('cf')};
+$('#cf').onsubmit=e=>{e.preventDefault();if($('#cCode').value.trim()!=='1234')return $('#cErr').textContent='הקוד שגוי, נסה/י שוב';auth('df')};
+$('#resend').onclick=()=>{$('#cErr').style.color='#00AF67';$('#cErr').textContent='קוד חדש נשלח ✓';setTimeout(()=>$('#cErr').style.color='',1500)};
+$('#df').onsubmit=e=>{e.preventDefault();$('#fMail').value=pending.m;$('#fName').value=pending.n;enter(pending.n)};
+$('#pf').onsubmit=e=>{e.preventDefault();const m=$('#pMail').value.trim();if(!okMail(m))return $('#pErr').textContent='כתובת המייל לא תקינה';$('#sMail').textContent=m;auth('sf')};
+$('#sf').onsubmit=e=>{e.preventDefault();auth('lf')};
+$('#resend2').onclick=()=>toast('המייל נשלח שוב ✓');
+/* ---- representatives ---- */
+const FN=['ישראל','שרה','דוד','רחל','משה','חני','יוסי','מירב','אבי','דנה','נועה','איתי','תמר','עומר','ליאת'],LN=['ישראלי','כהן','לוי','מזרחי','פרץ','ביטון','אברהם','פרידמן','שלום','דהן','אזולאי','גבאי'];
+const TYPES=['יועץ/ת מס','רואה/ת חשבון','עורך/ת דין'],STS=['פעיל','פעיל','פעיל','ממתין','לא פעיל'];
+let reps=Array.from({length:146},(_,i)=>{const f=FN[i%FN.length],l=LN[(i*7)%LN.length];return{f,l,mail:`${['israel','sara','david','rachel','moshe','hani','yossi','merav','avi','dana','noa','itay','tamar','omer','liat'][i%15]}.${i+1}@example.co.il`,phone:`05${i%9}-${String(1000000+i*7919%9000000).slice(0,7)}`,cs:String(100000000+i*48271%899999999).slice(0,9),type:TYPES[i%3],st:STS[(i*3)%5],img:['שרה','רחל','חני','מירב','דנה','נועה','תמר','ליאת'].includes(f)?'assets/woman.png':'assets/man.png'}});
+let rpage=1;const PER=10;
+function filtered(){const q=$('#rq').value.trim(),s=$('#rs').value,t=$('#rt').value;
+  return reps.filter(r=>(!q||(r.f+' '+r.l+r.mail+r.cs+r.phone).includes(q))&&(!s||r.st===s)&&(!t||r.type===t))}
+function renderReps(){const L=filtered(),pages=Math.max(1,Math.ceil(L.length/PER));rpage=Math.min(rpage,pages);
+  const cls={'פעיל':'ok','ממתין':'wait','לא פעיל':'off'};
+  $('#rbody').innerHTML=L.slice((rpage-1)*PER,rpage*PER).map(r=>{const k=reps.indexOf(r);return`<tr><td><div class="who"><img src="${r.img}" alt="">${esc(r.f+' '+r.l)}</div></td><td>${esc(r.mail)}</td><td dir="ltr" style="text-align:right">${esc(r.phone)}</td><td>${r.cs}</td><td>${r.type}</td><td><span class="pill ${cls[r.st]}">${r.st}</span></td>
+  <td><div class="acts"><button title="שיחה" data-chat="${k}"><img src="assets/t-msg.svg" alt=""></button><button title="מחיקה" data-del="${k}">🗑</button></div></td></tr>`}).join('')||'<tr><td colspan="7" style="text-align:center;color:var(--mut);padding:30px">לא נמצאו מייצגים</td></tr>';
+  $('#rinfo').textContent=`מציג ${L.length?(rpage-1)*PER+1:0}-${Math.min(rpage*PER,L.length)} מתוך ${L.length}`;
+  let b=`<button data-p="${rpage-1}" ${rpage<2?'disabled':''}>‹</button>`;
+  for(let p=1;p<=pages;p++)if(p<3||p>pages-2||Math.abs(p-rpage)<2)b+=`<button data-p="${p}" class="${p===rpage?'on':''}">${p}</button>`;else if(!b.endsWith('…'))b+='…';
+  $('#rpg').innerHTML=b+`<button data-p="${rpage+1}" ${rpage>=pages?'disabled':''}>›</button>`;$('#repCount').textContent=reps.length}
+$('#rq').oninput=$('#rs').onchange=$('#rt').onchange=()=>{rpage=1;renderReps()};
+$('#rpg').onclick=e=>{const p=e.target.dataset.p;if(p&&!e.target.disabled){rpage=+p;renderReps()}};
+$('#rbody').onclick=e=>{const c=e.target.closest('[data-chat]'),d=e.target.closest('[data-del]');
+  if(c){const r=reps[c.dataset.chat];const n=r.f+' '+r.l;let i=threads.findIndex(t=>t.n===n);
+    if(i<0){threads.unshift({n,unread:false,msgs:[{who:'bot',t:`פתחתי שיחה בנושא ${n} (תיק ${r.cs}). במה אפשר לעזור?`,time:now(),chips:MENU}]});i=0}
+    cur=i;renderThreads();renderMsgs();setView('chat');document.body.classList.add('open')}
+  if(d){const r=reps[d.dataset.del];if(confirm(`למחוק את ${r.f} ${r.l} מהרשימה?`)){reps.splice(d.dataset.del,1);renderReps();toast('המייצג נמחק')}}};
+$('#navList').onclick=()=>setView('list');
+$('#goAdd').onclick=()=>{['aF','aL','aId','aCase','aMail','aPhone'].forEach(i=>$('#'+i).value='');$('#aImg').src='assets/man.png';$('#aDocName').textContent='';setView('add');$('#aF').focus()};
+document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>setView('list'));
+let aImgData='';
+$('#aPic').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{aImgData=r.result;$('#aImg').src=aImgData};r.readAsDataURL(f)};
+const showDoc=f=>{if(f)$('#aDocName').textContent='✓ '+f.name+' צורף'};
+$('#aDoc').onchange=e=>showDoc(e.target.files[0]);
+$('#drop').ondragover=e=>{e.preventDefault();$('#drop').classList.add('over')};$('#drop').ondragleave=()=>$('#drop').classList.remove('over');
+$('#drop').ondrop=e=>{e.preventDefault();$('#drop').classList.remove('over');showDoc(e.dataTransfer.files[0])};
+$('#aSave').onclick=()=>{const v=i=>$('#'+i).value.trim();
+  if(!v('aF')||!v('aL'))return toast('יש למלא שם פרטי ושם משפחה');if(!/^\d{9}$/.test(v('aId')))return toast('תעודת זהות צריכה 9 ספרות');
+  if(!okMail(v('aMail')))return toast('כתובת המייל לא תקינה');if(v('aPhone').replace(/\D/g,'').length<9)return toast('מספר הטלפון לא תקין');
+  reps.unshift({f:v('aF'),l:v('aL'),mail:v('aMail'),phone:v('aPhone'),cs:v('aCase')||String(Date.now()).slice(-9),type:v('aType'),st:v('aSt'),img:aImgData||'assets/man.png'});aImgData='';
+  rpage=1;$('#rq').value='';$('#rs').value='';$('#rt').value='';setView('list');toast(`${v('aF')} ${v('aL')} נוסף/ה לרשימה ✓`)};
+document.querySelectorAll('.side .nav.box:not(#navList)').forEach(n=>n.onclick=()=>toast('המסך "'+n.textContent.trim()+'" לא מופיע בעיצוב'));
+const _oc=openChatWith;openChatWith=t=>{_oc(t);document.body.classList.add('open')};
+$('#fRole').onchange=e=>$('#pRole').textContent=e.target.value;
+$('#fName').oninput=e=>$('#pName').textContent=e.target.value;
+$('#pFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();
+  r.onload=()=>{USERIMG=r.result;$('#pImg').src=USERIMG;document.querySelector('.foot img').src=USERIMG;renderMsgs();toast('התמונה עודכנה')};r.readAsDataURL(f);e.target.value=''};
+$('#pDel').onclick=()=>{USERIMG='';$('#pImg').src=MEIMG;document.querySelector('.foot img').src='assets/admin.png';renderMsgs();toast('התמונה הוסרה')};
+$('#pSave').onclick=()=>{
+  const id=$('#fId').value.trim(),mail=$('#fMail').value.trim(),p1=$('#fPw1').value,p2=$('#fPw2').value;
+  if(!$('#fName').value.trim())return toast('יש למלא שם מלא');
+  if(mail&&!/^\S+@\S+\.\S+$/.test(mail))return toast('כתובת האימייל לא תקינה');
+  if(id&&!/^\d{9}$/.test(id))return toast('תעודת זהות צריכה 9 ספרות');
+  if(p1||p2){if(p1.length<4)return toast('הסיסמה צריכה לפחות 4 תווים');if(p1!==p2)return toast('הסיסמאות לא תואמות')}
+  $('#uname').textContent=$('#fName').value.trim();$('#fPw1').value=$('#fPw2').value='';toast('הפרטים נשמרו ✓')};
+$('#un').focus();
+const tick=()=>$('#clock').textContent=now();tick();setInterval(tick,30000);
+renderThreads();renderMsgs();
+</script>
+<script>
+/* ================= APP: every feature works on its own ================= */
+const LS={get(k,d){try{const v=localStorage.getItem('rm_'+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem('rm_'+k,JSON.stringify(v))}catch(e){}}};
+const fmt=n=>Number(n||0).toLocaleString('he-IL',{maximumFractionDigits:2});
+const ils=n=>'₪'+fmt(Math.round(n));
+const today=()=>new Date().toLocaleDateString('he-IL');
+const rid=(p,len=7)=>p+String(Math.floor(Math.random()*9*10**(len-1))+10**(len-1));
+const val=id=>{const e=document.getElementById(id);return e?e.value.trim():''};
+const num=id=>parseFloat(val(id).replace(/,/g,''))||0;
+function download(name,text,type='text/plain'){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['﻿'+text],{type}));a.download=name;a.click()}
+
+/* ---------- state ---------- */
+let activity=LS.get('activity',[
+ {t:'דוח הקופה הוגש בהצלחה',d:'היום 10:30',i:'Ellipse28'},{t:'דוח 1301 נשלח לבדיקה',d:'היום 09:12',i:'Book1'},{t:'בקשת פריסה ממתינה לאישור',d:'אתמול 16:40',i:'Clock'}]);
+const CL=['משה כהן','רחל לוי','דוד מזרחי','שרה פרץ','יוסי ביטון','נועה אברהם','אבי שלום','תמר דהן','עומר גבאי','ליאת פרידמן','איתי אזולאי','דנה ישראלי'];
+const SUBJ=['השלמת מסמכים לדוח שנתי','אישור ייפוי כוח','בקשה להחזר מס','השגה על שומה','פריסת חוב','עדכון פרטי עוסק','אישור ניכוי במקור','בירור יתרת חוב'];
+let tasks=LS.get('tasks',Array.from({length:23},(_,i)=>({id:i+1,client:CL[i%CL.length],subj:SUBJ[(i*3)%SUBJ.length],due:new Date(Date.now()+((i%9)-2)*864e5).toLocaleDateString('he-IL'),urgent:i<7,done:false})));
+const RSTS=['התקבל','בבדיקה','אושר','אושר','אושר','נדחה'],RFORMS=['135','1301','1214','856','102','106'];
+let reports=LS.get('reports',Array.from({length:1847},(_,i)=>({ref:String(500000+i*37),form:RFORMS[i%6],client:CL[(i*5)%CL.length],date:new Date(Date.now()-(i%28)*864e5).toLocaleDateString('he-IL'),st:RSTS[(i*7)%6]})));
+let notes=LS.get('notes',[
+ {t:'דוח 1301 של משה כהן אושר',d:'לפני 20 דק׳',go:'reports',r:false},{t:'3 משימות דחופות ממתינות לטיפול',d:'לפני שעה',go:'tasks-urgent',r:false},
+ {t:'מועד דיווח מע"מ מתקרב (15 לחודש)',d:'היום',go:'calendar',r:false},{t:'עדכון: שיעור מע"מ 18%',d:'אתמול',go:'info',r:true}]);
+const savedReps=LS.get('reps',null);if(savedReps)reps=savedReps;
+function persist(){LS.set('activity',activity.slice(0,60));LS.set('tasks',tasks);LS.set('reports',reports);LS.set('notes',notes);LS.set('reps',reps);
+  const prof={};document.querySelectorAll('#profile input:not([type=password]):not([type=file]),#profile select').forEach(e=>prof[e.id||e.parentElement.textContent.trim()]=e.type==='checkbox'?e.checked:e.value);prof.img=USERIMG;LS.set('profile',prof);if(USER)LS.set('user',USER)}
+addEventListener('beforeunload',persist);setInterval(persist,4000);
+function log(t,i='Ellipse28'){activity.unshift({t,d:'עכשיו',i});renderRecent()}
+function notify(t,go){notes.unshift({t,d:'עכשיו',go,r:false});bellDot()}
+
+/* ---------- dashboard numbers ---------- */
+function refreshStats(){const s=document.querySelectorAll('.st b');
+  s[0].textContent=fmt(reps.filter(r=>r.st==='פעיל').length);s[1].textContent=fmt(reports.length);
+  s[2].textContent=tasks.filter(t=>!t.done).length;s[3].textContent=tasks.filter(t=>!t.done&&t.urgent).length;$('#repCount').textContent=reps.length}
+function renderRecent(){$('#ra').innerHTML=activity.slice(0,3).map(a=>`<div><img src="assets/d/${a.i}.svg" alt=""><span>${esc(a.t)}<small>${a.d} · ע"י ${esc(USER||'ישראל ישראלי')}</small></span></div>`).join('')}
+
+/* ---------- router for generic pages ---------- */
+let back=['home'];
+function go(name,arg){const P=PAGES[name.split(':')[0]];if(!P)return;
+  const cur2=document.body.className.replace(/^v-/,'').split(' ')[0];if(cur2!=='page')back=[cur2];
+  const p=P(name.includes(':')?name.split(':')[1]:arg);
+  $('#page').innerHTML=`<div class="ph"><h2>${p.title}</h2><button class="bk" data-bk>→ חזרה</button></div>${p.sub?`<p class="sub">${p.sub}</p>`:''}${p.html}`;
+  $('#page').oninput=null;setView('page');document.querySelectorAll('.side .nav').forEach(n=>n.classList.toggle('on',n.dataset.pg===name));
+  $('#page').scrollTop=0;p.bind&&p.bind($('#page'));refreshStats()}
+$('#page').addEventListener('click',e=>{if(e.target.closest('[data-bk]'))setView(back[0]||'home');const g=e.target.closest('[data-go2]');if(g)go(g.dataset.go2,g.dataset.arg)});
+
+/* ---------- forms engine ---------- */
+const YEARS=['2025','2024','2023','2022','2021'];
+const FORMS={
+ '135':{n:'דוח לבקשת החזר מס',c:'מס הכנסה',f:[['שם הנישום','name',1],['תעודת זהות','id',1,'id'],['שנת מס','year',1,YEARS],['הכנסה ברוטו שנתית (₪)','gross',1,'num'],['מס שנוכה במקור (₪)','paid',1,'num'],['נקודות זיכוי','pts',0,'num'],['צירוף טופס 106','f106',0,'file']]},
+ '106':{n:'ריכוז שנתי למעסיק (106)',c:'ממסיק',f:[['שם המעסיק','emp',1],['ח.פ / תיק ניכויים','eid',1,'id'],['שם העובד','name',1],['ת.ז העובד','id',1,'id'],['שנה','year',1,YEARS],['שכר ברוטו שנתי (₪)','gross',1,'num'],['מס שנוכה (₪)','paid',1,'num']]},
+ '1301':{n:'דוח שנתי ליחיד (1301)',c:'מס הכנסה',f:[['שם הנישום','name',1],['תעודת זהות','id',1,'id'],['שנת מס','year',1,YEARS],['הכנסה מעסק (₪)','biz',0,'num'],['הכנסה ממשכורת (₪)','sal',0,'num'],['הוצאות מוכרות (₪)','exp',0,'num'],['צירוף מסמכים','docs',0,'file']]},
+ '1214':{n:'דוח שנתי לחברה (1214)',c:'מס הכנסה',f:[['שם החברה','name',1],['ח.פ','id',1,'id'],['שנת מס','year',1,YEARS],['הכנסות (₪)','inc',1,'num'],['הוצאות (₪)','exp',1,'num'],['צירוף דוחות כספיים','docs',0,'file']]},
+ '856':{n:'דוח שנתי על ניכויים מתשלומים (856)',c:'ניכויים',f:[['שם המנכה','name',1],['תיק ניכויים','id',1,'id'],['שנה','year',1,YEARS],['סך התשלומים (₪)','tot',1,'num'],['סך המס שנוכה (₪)','paid',1,'num']]},
+ '102':{n:'דיווח חודשי על ניכויים (102)',c:'ממסיק',f:[['שם המעסיק','name',1],['תיק ניכויים','id',1,'id'],['חודש הדיווח','month',1,'month'],['מספר עובדים','emps',1,'num'],['ניכוי מס הכנסה (₪)','tax',1,'num'],['ביטוח לאומי (₪)','bl',1,'num']]},
+ '2279':{n:'ייפוי כוח למייצג (2279)',c:'כללי',f:[['שם הלקוח','name',1],['ת.ז הלקוח','id',1,'id'],['סוג ייצוג','type',1,['מס הכנסה','מע"מ','ניכויים','כללי']],['ייפוי הכוח בתוקף עד','until',1,'date'],['צירוף ייפוי כוח חתום','sig',1,'file']]},
+ 'rep':{n:'בקשת רישום ייצוג',c:'כללי',f:[['שם הלקוח','name',1],['ת.ז / ח.פ הלקוח','id',1,'id'],['סוג ייצוג','type',1,['מס הכנסה','מע"מ','ניכויים','כללי']],['תחילת ייצוג','from',1,'date'],['צירוף ייפוי כוח חתום','sig',1,'file']]},
+ 'case':{n:'פתיחת תיק (מפתח)',c:'כללי',f:[['סוג התיק','type',1,['עוסק פטור','עוסק מורשה','חברה בע"מ','שותפות']],['שם העסק / הנישום','name',1],['ת.ז / ח.פ','id',1,'id'],['כתובת העסק','addr',1],['טלפון','phone',1,'tel'],['תאריך תחילת פעילות','from',1,'date'],['תחום עיסוק','field',0]]},
+};
+function fieldHTML([l,k,req,t]){const id='ff_'+k;
+  if(Array.isArray(t))return`<div class="fld"><label>${l}${req?' *':''}</label><select id="${id}">${t.map(o=>`<option>${o}</option>`).join('')}</select></div>`;
+  if(t==='file')return`<div class="fld"><label>${l}${req?' *':''}</label><label class="drop" style="padding:10px;display:block">📎 <span id="${id}_n">בחירת קובץ</span><input type="file" id="${id}" hidden></label></div>`;
+  const it={num:'text" inputmode="decimal',id:'text" inputmode="numeric" maxlength="9',date:'date',month:'month',tel:'tel'}[t]||'text';
+  return`<div class="fld"><label>${l}${req?' *':''}</label><input id="${id}" type="${it}"></div>`}
+function validate(def){for(const [l,k,req,t] of def.f){const el=$('#ff_'+k);
+  if(t==='file'){if(req&&!el.files.length)return`יש לצרף: ${l}`;continue}
+  const v=el.value.trim();if(req&&!v)return`יש למלא: ${l}`;
+  if(v&&t==='id'&&!/^\d{8,9}$/.test(v))return`${l}: 8-9 ספרות`;
+  if(v&&t==='num'&&isNaN(parseFloat(v.replace(/,/g,''))))return`${l}: יש להזין מספר`;
+  if(v&&t==='tel'&&v.replace(/\D/g,'').length<9)return`${l} לא תקין`}return''}
+function formSummary(code){const g=k=>num('ff_'+k);
+  if(code==='135'){const gross=g('gross'),paid=g('paid'),pts=g('pts')||2.25,tax=Math.max(0,incomeTax(gross)-pts*242*12);const d=paid-tax;return d>0?`החזר משוער: <b>${ils(d)}</b>`:`לפי הנתונים אין החזר (חבות נוספת משוערת ${ils(-d)})`}
+  if(code==='1214'){const p=g('inc')-g('exp');return`רווח: ${ils(p)} · מס חברות (23%): <b>${ils(Math.max(0,p)*0.23)}</b>`}
+  if(code==='1301'){const t=g('biz')+g('sal')-g('exp');return`הכנסה חייבת: ${ils(t)} · מס משוער: <b>${ils(incomeTax(t))}</b>`}
+  return''}
+function incomeTax(y){const B=[[84120,.1],[120720,.14],[193800,.2],[269280,.31],[560280,.35],[721560,.47],[Infinity,.5]];let t=0,prev=0;for(const [top,r] of B){if(y>prev)t+=(Math.min(y,top)-prev)*r;prev=top}return t}
+function afterSubmit(code,ref){const name=val('ff_name');
+  if(code==='rep'){tasks.unshift({id:Date.now(),client:name,subj:'בקשת רישום ייצוג - ממתין לאישור',due:new Date(Date.now()+3*864e5).toLocaleDateString('he-IL'),urgent:false,done:false})}
+  else if(code==='case'){}
+  else reports.unshift({ref,form:code,client:name,date:today(),st:'התקבל'});
+  log(`${FORMS[code].n} - ${name} (אסמכתא ${ref})`,'Book1');notify(`${FORMS[code].n} של ${name} התקבל`,code==='rep'?'tasks':'reports')}
+
+/* ---------- pages ---------- */
+const PAGES={
+ forms:()=>({title:'טפסים',sub:'מילוי מקוון או הורדה של טפסים להגשה',html:`<div class="bar"><input id="fq" placeholder="חיפוש טופס לפי שם או מספר..."></div><div class="chipsF" id="fc">${['הכל','מס הכנסה','ממסיק','ניכויים','כללי'].map((c,i)=>`<button class="${i?'':'on'}">${c}</button>`).join('')}</div><div class="card list2" id="fl"></div>`,
+  bind(){let cat='הכל';const draw=()=>{const q=val('fq');$('#fl').innerHTML=Object.entries(FORMS).filter(([k,f])=>k!=='rep'&&k!=='case'&&(cat==='הכל'||f.c===cat)&&(!q||(k+f.n).includes(q))).map(([k,f])=>`<div><span class="ico" style="width:38px;height:38px;border-radius:8px;background:var(--bub);display:grid;place-items:center;color:var(--blue);font-weight:700;font-size:12px">${k}</span><div class="grow"><b>${f.n}</b><small>${f.c} · ${f.f.length} שדות</small></div><button class="btn" data-dl="${k}">הורדה</button><button class="btn pri" data-go2="fill:${k}">מילוי מקוון</button></div>`).join('')||'<p style="color:var(--mut);padding:20px">לא נמצאו טפסים</p>'};
+   draw();$('#fq').oninput=draw;$('#fc').onclick=e=>{if(e.target.tagName!=='BUTTON')return;$('#fc .on').classList.remove('on');e.target.classList.add('on');cat=e.target.textContent;draw()};
+   $('#fl').addEventListener('click',e=>{const d=e.target.closest('[data-dl]');if(!d)return;const f=FORMS[d.dataset.dl];download(`טופס ${d.dataset.dl}.html`,`<html dir="rtl"><meta charset="utf-8"><body style="font-family:Arial;padding:40px"><h1>${f.n}</h1>${f.f.map(x=>`<p>${x[0]}: ______________________</p>`).join('')}<p>חתימה: __________ תאריך: __________</p></body></html>`,'text/html');toast('הטופס הורד ✓')})}}),
+ fill:code=>{const f=FORMS[code];return{title:f.n,sub:`${f.c} · שדות עם * הם חובה`,html:`<div class="pcard"><div class="grid2">${f.f.map(fieldHTML).join('')}</div><div id="fsum"></div></div><div class="pact"><button class="btn pri" id="fsend">שליחה</button><button class="btn ghost" id="fdraft">שמירת טיוטה</button></div>`,
+  bind(){const dk='draft_'+code,dr=LS.get(dk,{});f.f.forEach(([,k,,t])=>{const e=$('#ff_'+k);if(t==='file'){e.onchange=()=>{$('#ff_'+k+'_n').textContent=e.files[0]?'✓ '+e.files[0].name:'בחירת קובץ'}}else if(dr[k])e.value=dr[k];if(k==='name'&&code==='2279'){} });
+   if(Object.keys(dr).length)toast('טיוטה שמורה נטענה');
+   const live=()=>{const s=formSummary(code);$('#fsum').innerHTML=s?`<div class="res">${s}</div>`:''};$('#page').oninput=live;live();
+   $('#fdraft').onclick=()=>{const o={};f.f.forEach(([,k,,t])=>{if(t!=='file')o[k]=$('#ff_'+k).value});LS.set(dk,o);toast('הטיוטה נשמרה ✓')};
+   $('#fsend').onclick=()=>{const er=validate(f);if(er)return toast(er);const ref=rid('');const sum=formSummary(code);afterSubmit(code,ref);LS.set(dk,{});
+    $('#page').innerHTML=`<div class="pcard ok-box"><div class="env">✓</div><h2>${code==='case'?'התיק נפתח בהצלחה':'הטופס נשלח בהצלחה'}</h2><p style="color:var(--sub);margin:8px 0 4px">${code==='case'?'מספר תיק':'מספר אסמכתא'}: <b>${code==='case'?rid('9',9):ref}</b></p>${sum?`<div class="res" style="display:inline-block">${sum}</div>`:''}<div class="pact" style="justify-content:center;margin-top:22px"><button class="btn" id="rcpt">הורדת אישור</button><button class="btn pri" data-go2="${code==='rep'?'tasks':'reports'}">${code==='rep'?'למשימות':'לרשימת הדוחות'}</button><button class="btn ghost" data-bk>חזרה</button></div></div>`;
+    $('#rcpt').onclick=()=>download(`אישור ${ref}.txt`,`אישור הגשה - פורטל מייצגים\n${f.n}\nאסמכתא: ${ref}\nתאריך: ${today()}\nהוגש ע"י: ${USER}`);refreshStats()}}}},
+ vat:()=>({title:'מע"מ - מערכת גבייה',sub:'חישוב דיווח תקופתי והפקת שובר תשלום (שיעור מע"מ 18%)',html:`<div class="pcard"><div class="grid2">
+   <div class="fld"><label>מספר עוסק *</label><input id="v_id" inputmode="numeric" maxlength="9"></div>
+   <div class="fld"><label>תקופת דיווח *</label><input id="v_per" type="month"></div>
+   <div class="fld"><label>עסקאות חייבות (לפני מע"מ) ₪</label><input id="v_s" inputmode="decimal" placeholder="0"></div>
+   <div class="fld"><label>תשומות - מע"מ ששולם על קניות ₪</label><input id="v_i" inputmode="decimal" placeholder="0"></div>
+   <div class="fld"><label>עסקאות פטורות / אפס ₪</label><input id="v_z" inputmode="decimal" placeholder="0"></div></div><div id="vres"></div></div>
+   <div class="pact"><button class="btn pri" id="vgo">הגשת דיווח והפקת שובר</button></div>`,
+  bind(){const calc=()=>{const out=num('v_s')*0.18,inp=num('v_i'),d=out-inp;$('#vres').innerHTML=`<div class="res">מע"מ עסקאות: ${ils(out)} · מע"מ תשומות: ${ils(inp)}<b class="big">${d>=0?'לתשלום: '+ils(d):'להחזר: '+ils(-d)}</b></div>`;return d};$('#page').oninput=calc;calc();
+   const p=new Date();p.setMonth(p.getMonth()-1);$('#v_per').value=p.toISOString().slice(0,7);
+   $('#vgo').onclick=()=>{if(!/^\d{8,9}$/.test(val('v_id')))return toast('מספר עוסק: 8-9 ספרות');if(!num('v_s')&&!num('v_i'))return toast('יש להזין עסקאות או תשומות');const d=calc(),ref=rid('8',10);
+    reports.unshift({ref,form:'מע"מ',client:'עוסק '+val('v_id'),date:today(),st:'התקבל'});log(`דיווח מע"מ ${val('v_per')} הוגש (${d>=0?'לתשלום':'להחזר'} ${ils(Math.abs(d))})`,'Book1');
+    $('#vres').innerHTML+=`<div class="res" style="background:#E5F8EF">✓ הדיווח נקלט. ${d>0?`שובר תשלום מספר <b>${ref}</b> הופק.`:'ההחזר יועבר לחשבון הבנק הרשום.'} <a class="lnk" id="vdl">הורדת שובר</a></div>`;
+    $('#vdl').onclick=()=>download(`שובר מעמ ${ref}.txt`,`שובר תשלום מע"מ\nעוסק: ${val('v_id')}\nתקופה: ${val('v_per')}\nסכום: ${ils(Math.abs(d))}\nמספר שובר: ${ref}\nלתשלום עד 15 לחודש העוקב`)}}}),
+ annual:()=>({title:'שידור דוח שנתי (OPCN)',sub:'העלאת קובץ דוח שנתי מתוכנת הנהלת החשבונות ושידורו',html:`<div class="pcard"><div class="grid2">
+   <div class="fld"><label>לקוח *</label><select id="a_c">${CL.map(c=>`<option>${c}</option>`).join('')}</select></div>
+   <div class="fld"><label>שנת מס *</label><select id="a_y">${YEARS.map(y=>`<option>${y}</option>`).join('')}</select></div></div>
+   <label class="drop" id="a_drop" style="display:block;margin-top:18px">📤 גרירת קובץ הדוח לכאן (XML / PDF / ZIP)<br>או לחיצה לבחירה<input type="file" id="a_f" hidden accept=".xml,.pdf,.zip,.txt"></label>
+   <div id="a_st"></div></div><div class="pact"><button class="btn pri" id="a_go" disabled>שידור הדוח</button></div>`,
+  bind(){let file=null;const pick=f=>{if(!f)return;if(f.size>20*1048576)return toast('הקובץ גדול מ-20MB');file=f;$('#a_st').innerHTML=`<p style="margin-top:12px">📄 ${esc(f.name)} · ${(f.size/1024).toFixed(0)}KB</p>`;$('#a_go').disabled=false};
+   $('#a_f').onchange=e=>pick(e.target.files[0]);const d=$('#a_drop');d.ondragover=e=>{e.preventDefault();d.classList.add('over')};d.ondragleave=()=>d.classList.remove('over');d.ondrop=e=>{e.preventDefault();d.classList.remove('over');pick(e.dataTransfer.files[0])};
+   $('#a_go').onclick=()=>{$('#a_go').disabled=true;const steps=['בדיקת מבנה הקובץ','אימות חתימה דיגיטלית','בדיקת תקינות נתונים','שידור למערכת'];let i=0;
+    $('#a_st').innerHTML+=`<div class="prog"><i id="a_p"></i></div><p id="a_t" style="color:var(--sub)"></p>`;
+    const tick=()=>{if(i<steps.length){$('#a_t').textContent=steps[i]+'...';$('#a_p').style.width=((i+1)/steps.length*100)+'%';i++;setTimeout(tick,700)}else{const ref=rid('');
+     reports.unshift({ref,form:'OPCN',client:val('a_c'),date:today(),st:'בבדיקה'});log(`דוח שנתי ${val('a_y')} של ${val('a_c')} שודר (${ref})`,'Book1');notify(`הדוח השנתי של ${val('a_c')} נקלט`,'reports');
+     $('#a_t').innerHTML=`<span style="color:#00AF67">✓ הדוח שודר בהצלחה. מספר אסמכתא: <b>${ref}</b></span>`;refreshStats()}};tick()}}}),
+ magen:()=>({title:'מגן - מערכת ניכויים',sub:'בדיקת שיעור ניכוי במקור לספק לפני תשלום',html:`<div class="pcard"><div class="grid2">
+   <div class="fld"><label>מספר ספק (ת.ז / ח.פ) *</label><input id="m_id" inputmode="numeric" maxlength="9"></div>
+   <div class="fld"><label>סכום התשלום (₪) *</label><input id="m_a" inputmode="decimal"></div>
+   <div class="fld"><label>סוג התשלום</label><select id="m_t"><option>שירותים</option><option>נכסים</option><option>שכר סופרים</option><option>ריבית</option></select></div></div><div id="m_r"></div></div>
+   <div class="pact"><button class="btn pri" id="m_go">בדיקת שיעור ניכוי</button></div>`,
+  bind(){$('#m_go').onclick=()=>{const id=val('m_id'),a=num('m_a');if(!/^\d{8,9}$/.test(id))return toast('מספר ספק: 8-9 ספרות');if(!a)return toast('יש להזין סכום');
+   const h=[...id].reduce((s,c)=>s+ +c,0),hasCert=h%3!==0,rate=hasCert?[0,2,5,10][h%4]:30,w=a*rate/100,until=new Date(new Date().getFullYear(),11,31).toLocaleDateString('he-IL');
+   $('#m_r').innerHTML=`<div class="res">${hasCert?`✓ לספק יש אישור ניכוי במקור בתוקף עד ${until}`:'⚠ לא נמצא אישור ניכוי בתוקף - ניכוי מקסימלי'}<b class="big">שיעור ניכוי: ${rate}%</b>סכום לניכוי: <b>${ils(w)}</b> · לתשלום לספק: <b>${ils(a-w)}</b><br><a class="lnk" id="m_dl">הורדת אישור בדיקה</a></div>`;
+   log(`בדיקת ניכוי לספק ${id}: ${rate}%`,'Ellipse28');$('#m_dl').onclick=()=>download(`בדיקת ניכוי ${id}.txt`,`ספק: ${id}\nסכום: ${ils(a)}\nשיעור ניכוי: ${rate}%\nסכום ניכוי: ${ils(w)}\nתאריך: ${today()}`)}}}),
+ tasks:filter=>({title:filter==='urgent'?'דורש תשומת לב':'ממתינים לטיפול',sub:'משימות פתוחות של הלקוחות שלך',html:`<div class="chipsF" id="tf"><button data-f="">כל הפתוחות</button><button data-f="urgent">דחופות</button><button data-f="done">טופלו</button></div><div class="card list2" id="tl"></div>`,
+  bind(){let f=filter||'';const draw=()=>{document.querySelectorAll('#tf button').forEach(b=>b.classList.toggle('on',b.dataset.f===f));
+    const L=tasks.filter(t=>f==='done'?t.done:!t.done&&(f!=='urgent'||t.urgent));
+    $('#tl').innerHTML=L.map(t=>`<div><img src="assets/${['רחל','שרה','נועה','תמר','ליאת','דנה'].includes(t.client.split(' ')[0])?'woman':'man'}.png" style="width:36px;height:36px;border-radius:50%" alt=""><div class="grow"><b>${esc(t.client)}</b> ${t.urgent&&!t.done?'<span class="tag red">דחוף</span>':''}<small>${esc(t.subj)} · יעד: ${t.due}</small></div>${t.done?'<span class="pill ok">טופל</span>':`<button class="btn" data-t="${t.id}" data-a="chat">פנייה ללקוח</button><button class="btn pri" data-t="${t.id}" data-a="done">סימון כטופל</button>`}</div>`).join('')||'<p style="color:var(--mut);padding:20px;text-align:center">אין משימות 🎉</p>';refreshStats()};draw();
+   $('#tf').onclick=e=>{if(e.target.dataset.f!==undefined){f=e.target.dataset.f;draw()}};
+   $('#tl').onclick=e=>{const b=e.target.closest('[data-t]');if(!b)return;const t=tasks.find(x=>x.id==b.dataset.t);
+    if(b.dataset.a==='done'){t.done=true;log(`טופל: ${t.subj} - ${t.client}`);toast('המשימה סומנה כטופלה ✓');draw()}
+    else{let i=threads.findIndex(x=>x.n===t.client);if(i<0){threads.unshift({n:t.client,unread:false,msgs:[]});i=0}cur=i;threads[i].msgs.push({who:'me',t:`שלום ${t.client}, בנוגע ל"${t.subj}" - `,time:now()});renderThreads();renderMsgs();setView('chat');document.body.classList.add('open');$('#inp').focus()}}}}),
+ reports:()=>({title:'דוחות שהוגשו',sub:'כל הדוחות והדיווחים ששודרו דרך הפורטל',html:`<div class="bar"><input id="pq" placeholder="חיפוש לפי לקוח, טופס או אסמכתא..."><select id="ps"><option value="">כל הסטטוסים</option>${[...new Set(RSTS)].map(s=>`<option>${s}</option>`).join('')}</select></div><div class="tw"><table><thead><tr><th>אסמכתא</th><th>טופס</th><th>לקוח</th><th>תאריך</th><th>סטטוס</th><th></th></tr></thead><tbody id="pb"></tbody></table></div><div class="pager"><span id="pi"></span><div id="pp"></div></div>`,
+  bind(){let pg=1;const cls={'התקבל':'wait','בבדיקה':'wait','אושר':'ok','נדחה':'off'};const draw=()=>{const q=val('pq'),s=val('ps'),L=reports.filter(r=>(!s||r.st===s)&&(!q||(r.ref+r.form+r.client).includes(q))),P=Math.max(1,Math.ceil(L.length/12));pg=Math.min(pg,P);
+    $('#pb').innerHTML=L.slice((pg-1)*12,pg*12).map(r=>`<tr><td>${r.ref}</td><td>${esc(r.form)}</td><td>${esc(r.client)}</td><td>${r.date}</td><td><span class="pill ${cls[r.st]}">${r.st}</span></td><td><button class="btn" style="height:30px" data-r="${r.ref}">אישור</button></td></tr>`).join('')||'<tr><td colspan="6" style="text-align:center;color:var(--mut);padding:30px">לא נמצאו דוחות</td></tr>';
+    $('#pi').textContent=`${fmt(L.length)} דוחות · עמוד ${pg} מתוך ${P}`;$('#pp').innerHTML=`<button ${pg<2?'disabled':''} data-p="${pg-1}">‹</button><button class="on">${pg}</button><button ${pg>=P?'disabled':''} data-p="${pg+1}">›</button>`};draw();
+   $('#pq').oninput=$('#ps').onchange=()=>{pg=1;draw()};$('#pp').onclick=e=>{if(e.target.dataset.p&&!e.target.disabled){pg=+e.target.dataset.p;draw()}};
+   $('#pb').onclick=e=>{const b=e.target.closest('[data-r]');if(b){const r=reports.find(x=>x.ref===b.dataset.r);download(`אישור ${r.ref}.txt`,`אישור הגשה\nטופס: ${r.form}\nלקוח: ${r.client}\nאסמכתא: ${r.ref}\nתאריך: ${r.date}\nסטטוס: ${r.st}`)}}}}),
+ activity:()=>({title:'פעולות אחרונות',sub:'יומן כל הפעולות בחשבון',html:`<div class="card list2">${activity.map(a=>`<div><img src="assets/d/${a.i}.svg" style="width:18px" alt=""><div class="grow">${esc(a.t)}<small>${a.d} · ע"י ${esc(USER)}</small></div></div>`).join('')}</div>`}),
+ info:()=>{const N=[['מס הכנסה','עדכון מדרגות מס הכנסה לשנת 2026','מדרגות המס ונקודות הזיכוי לשנת המס 2026 עודכנו. ערך נקודת זיכוי: 242 ₪ לחודש. יש לעדכן את מערכות השכר בהתאם.'],['מע"מ','שיעור המע"מ עומד על 18%','החל מינואר 2025 שיעור המע"מ הוא 18%. חשבוניות שהופקו לפני המועד יחויבו בשיעור הקודם.'],['כללי','מועד אחרון להגשת דוחות שנתיים לשנת 2025','דוחות שנתיים ליחידים המיוצגים יוגשו לפי הסדר הדחייה למייצגים. מומלץ להגיש מוקדם כדי לזרז החזרים.'],['ניכויים','חובת דיווח מקוון על ניכויים','מעסיקים עם 10 עובדים ומעלה חייבים בדיווח 102 מקוון בלבד.'],['כללי','שדרוג מערכות - השבתה מתוכננת','ביום שישי הקרוב בין 22:00 ל-02:00 המערכות המקוונות לא יהיו זמינות.'],['מכס','עדכון תקרת הפטור ביבוא אישי','תקרת הפטור ממסים ביבוא אישי במשלוחים עומדת על 75$ למשלוח.']];
+  const read=LS.get('read',[]);return{title:'מידע חשוב',sub:'הודעות ועדכונים לציבור המייצגים',html:`<div class="chipsF" id="ic">${['הכל','מס הכנסה','מע"מ','ניכויים','מכס','כללי'].map((c,i)=>`<button class="${i?'':'on'}">${c}</button>`).join('')}</div><div id="il">${N.map((n,i)=>`<details class="acc" data-c="${n[0]}" data-i="${i}"><summary><span>${read.includes(i)?'':'<span class="unread" style="display:inline-block;margin-inline-end:8px"></span>'}${n[1]} <small style="color:var(--mut);font-weight:400">· ${n[0]}</small></span></summary><div>${n[2]}</div></details>`).join('')}</div>`,
+  bind(){$('#ic').onclick=e=>{if(e.target.tagName!=='BUTTON')return;$('#ic .on').classList.remove('on');e.target.classList.add('on');const c=e.target.textContent;document.querySelectorAll('#il .acc').forEach(a=>a.style.display=c==='הכל'||a.dataset.c===c?'':'none')};
+   document.querySelectorAll('#il .acc').forEach(a=>a.ontoggle=()=>{if(a.open){const r=LS.get('read',[]);if(!r.includes(+a.dataset.i)){r.push(+a.dataset.i);LS.set('read',r)}const u=a.querySelector('.unread');u&&u.remove()}})}}},
+ dollar:()=>({title:'שער הדולר',sub:'שער חליפין עדכני ומחשבון המרה',html:`<div class="cardsRow"><div class="card"><small style="color:var(--mut)">1 דולר ארה"ב =</small><div class="rate" id="d_r">...</div><small id="d_src" style="color:var(--mut)"></small></div>
+   <div class="card"><h3 style="margin-bottom:14px">מחשבון המרה</h3><div class="grid2"><div class="fld"><label>דולר $</label><input id="d_u" inputmode="decimal" value="100"></div><div class="fld"><label>שקל ₪</label><input id="d_s" inputmode="decimal"></div></div></div></div>`,
+  async bind(){const R=await rates();const r=1/R.r.USD;$('#d_r').textContent='₪'+r.toFixed(3);$('#d_src').textContent=R.src;
+   const u=()=>{$('#d_s').value=(num('d_u')*r).toFixed(2)},s=()=>{$('#d_u').value=(num('d_s')/r).toFixed(2)};$('#d_u').oninput=u;$('#d_s').oninput=s;u()}}),
+ rates:()=>({title:'שער יציג',sub:'שערי חליפין יציגים של המטבעות העיקריים',html:`<div class="cardsRow" style="margin-bottom:18px"><div class="card"><h3 style="margin-bottom:14px">המרה</h3><div class="grid2"><div class="fld"><label>סכום</label><input id="x_a" inputmode="decimal" value="1000"></div><div class="fld"><label>מטבע</label><select id="x_c"></select></div></div><div class="res" id="x_r"></div></div></div><div class="tw"><table style="min-width:0"><thead><tr><th>מטבע</th><th>קוד</th><th>שער בשקלים</th></tr></thead><tbody id="x_t"><tr><td colspan="3">טוען...</td></tr></tbody></table></div><p id="x_src" style="color:var(--mut);font-size:12px;margin-top:8px"></p>`,
+  async bind(){const R=await rates();const C=[['דולר ארה"ב','USD',1],['אירו','EUR',1],['לירה שטרלינג','GBP',1],['ין יפני','JPY',100],['פרנק שוויצרי','CHF',1],['דולר קנדי','CAD',1],['דולר אוסטרלי','AUD',1],['דינר ירדני','JOD',1],['לירה מצרית','EGP',10]];
+   $('#x_t').innerHTML=C.map(([n,c,u])=>`<tr><td>${n}${u>1?` (${u})`:''}</td><td>${c}</td><td><b>${(u/R.r[c]).toFixed(4)}</b></td></tr>`).join('');$('#x_src').textContent=R.src;
+   $('#x_c').innerHTML=C.map(([n,c])=>`<option value="${c}">${n}</option>`).join('');const calc=()=>{const c=val('x_c');$('#x_r').innerHTML=`${fmt(num('x_a'))} ${c} = <b class="big">${ils(num('x_a')/R.r[c])}</b>`};$('#x_a').oninput=$('#x_c').onchange=calc;calc()}}),
+ phones:()=>{const P=[['מוקד מס הכנסה','03-5550101','מס הכנסה'],['מוקד מע"מ','03-5550101','מע"מ'],['מוקד מייצגים','03-5550102','מייצגים'],['תמיכה טכנית - מערכות מקוונות','03-5550103','טכני'],['מכס - שירות לקוחות','03-5550101','מכס'],['מיסוי מקרקעין','03-5550104','מקרקעין'],['ביטוח לאומי','03-5550105','גופים נוספים'],['נציב קבילות הציבור','03-5550106','פניות']];
+  return{title:'טלפונים שימושיים',sub:'מוקדים ומחלקות - לחיצה מחייגת',html:`<div class="bar"><input id="tq" placeholder="חיפוש מחלקה..."></div><div class="card list2" id="tlist">${P.map(p=>`<div data-s="${p[0]+p[2]}"><span style="font-size:22px">📞</span><div class="grow"><b>${p[0]}</b><small>${p[2]}</small></div><a class="btn" href="tel:${p[1].replace(/[^\d*]/g,'')}" dir="ltr">${p[1]}</a><button class="btn ghost" data-cp="${p[1]}">העתקה</button></div>`).join('')}</div>`,
+  bind(){$('#tq').oninput=()=>document.querySelectorAll('#tlist>div').forEach(d=>d.style.display=d.dataset.s.includes(val('tq'))?'':'none');
+   $('#tlist').onclick=e=>{const c=e.target.closest('[data-cp]');if(c){navigator.clipboard&&navigator.clipboard.writeText(c.dataset.cp);toast('המספר הועתק ✓')}}}}},
+ help:()=>{const Q=[['איך מוסיפים לקוח חדש לייצוג?','ממלאים "בקשת רישום ייצוג" בפעולות המהירות ומצרפים ייפוי כוח חתום. הבקשה תופיע במשימות עד לאישור.'],['איך משדרים דוח שנתי?','בפעולות המהירות בוחרים "שידור דוח שנתי", מעלים את קובץ הדוח ולוחצים שידור. מקבלים מספר אסמכתא מיידית.'],['שכחתי סיסמה, מה עושים?','במסך ההתחברות לוחצים "שכחת סיסמה?" ומקבלים קישור לאיפוס במייל.'],['איך מורידים אישור הגשה?','ברשימת הדוחות שהוגשו, בכל שורה יש כפתור "אישור" להורדה.'],['איך מחשבים מע"מ לתשלום?','במסך מע"מ מזינים עסקאות ותשומות והחישוב מתעדכן מיד, כולל הפקת שובר.']];
+  return{title:'עזרה ותמיכה',sub:'שאלות נפוצות ופנייה לצוות התמיכה',html:`<div class="bar"><input id="hq" placeholder="חיפוש בשאלות נפוצות..."></div><div id="hl">${Q.map(q=>`<details class="acc" data-s="${q[0]+q[1]}"><summary>${q[0]}</summary><div>${q[1]}</div></details>`).join('')}</div>
+   <div class="pcard" style="margin-top:22px"><h3>פנייה לתמיכה</h3><div class="grid2"><div class="fld"><label>נושא</label><select id="h_s"><option>תקלה טכנית</option><option>שאלה מקצועית</option><option>הצעה לשיפור</option></select></div><div class="fld"><label>טלפון לחזרה</label><input id="h_p" type="tel"></div></div><div class="fld" style="margin-top:16px"><label>תיאור הפנייה *</label><textarea id="h_m" rows="4" style="width:100%;border:1px solid #D9E1EC;border-radius:4px;padding:10px;font:inherit"></textarea></div>
+   <div class="pact" style="margin-top:16px"><button class="btn pri" id="h_go">שליחת פנייה</button><button class="btn ghost" id="h_chat">צ'אט עם נציג וירטואלי</button></div></div>`,
+  bind(){$('#hq').oninput=()=>document.querySelectorAll('#hl .acc').forEach(d=>d.style.display=d.dataset.s.includes(val('hq'))?'':'none');
+   $('#h_go').onclick=()=>{if(val('h_m').length<5)return toast('יש לתאר את הפנייה');const t=rid('T-',6);log(`נפתחה פנייה לתמיכה ${t}`);$('#h_m').value='';toast(`הפנייה ${t} נשלחה ✓ נחזור אליך תוך יום עסקים`)};$('#h_chat').onclick=()=>setView('chat')}}},
+ topic:t=>{const map=[[/126\/856|856/,'856'],[/1214/,'1214'],[/1301/,'1301'],[/102/,'102'],[/106/,'106']];const m=map.find(([r])=>r.test(t));if(m)return PAGES.fill(m[1]);
+  if(/החזר/.test(t))return PAGES.calc('refund');if(/שבח/.test(t))return PAGES.calc('shevach');if(/נקודות/.test(t))return PAGES.calc('points');if(/שכר דירה/.test(t))return PAGES.calc('rent');if(/עסק זעיר/.test(t))return PAGES.fill('1301');
+  return{title:t,html:`<div class="pcard">מידע בנושא "${esc(t)}" יתעדכן בקרוב.</div>`}},
+ calc:k=>{const C={
+   refund:['סימולטור החזר מס',[['הכנסה ברוטו שנתית ₪','gross'],['מס שנוכה בשנה ₪','paid'],['נקודות זיכוי','pts','2.25'],['תרומות ₪','don','0']],g=>{const tax=Math.max(0,incomeTax(g.gross)-g.pts*242*12-g.don*0.35),d=g.paid-tax;return`מס שהיה צריך לשלם: ${ils(tax)}<b class="big">${d>0?'החזר משוער: '+ils(d):'אין החזר'}</b>${d>0?'<a class="lnk" data-go2="fill:135">להגשת בקשת החזר (טופס 135) ←</a>':''}`}],
+   shevach:['חישוב מס שבח',[['מחיר רכישה ₪','buy'],['מחיר מכירה ₪','sell'],['הוצאות מוכרות ₪','exp','0']],g=>{const s=Math.max(0,g.sell-g.buy-g.exp);return`שבח: ${ils(s)}<b class="big">מס שבח משוער (25%): ${ils(s*.25)}</b>חישוב משוער, לא כולל פטורים ולינאריות`}],
+   points:['מחשבון נקודות זיכוי',[['תושב/ת ישראל (2.25)','res','2.25'],['אישה (0.5)','wom','0'],['מספר ילדים מתחת לגיל 18','kids','0'],['סיום תואר אקדמי (1 = כן)','deg','0']],g=>{const p=g.res+g.wom+g.kids*1+g.deg*1;return`סה"כ נקודות: <b>${p}</b><b class="big">חיסכון חודשי: ${ils(p*242)}</b>שנתי: ${ils(p*242*12)} (ערך נקודה 242 ₪)`}],
+   rent:['דיווח הכנסות משכר דירה',[['שכר דירה חודשי ₪','rent']],g=>{const y=g.rent*12;return g.rent<=5654?`<b class="big">פטור ממס</b>שכר הדירה מתחת לתקרת הפטור החודשית (5,654 ₪)`:`<b class="big">מסלול 10%: ${ils(y*.1)} לשנה</b>חישוב משוער לפי מסלול 10% על ההכנסה השנתית (${ils(y)})`}]}[k];
+  return{title:C[0],sub:'החישוב מתעדכן תוך כדי הקלדה',html:`<div class="pcard"><div class="grid2">${C[1].map(([l,id,d])=>`<div class="fld"><label>${l}</label><input id="c_${id}" inputmode="decimal" value="${d||''}"></div>`).join('')}</div><div id="c_r"></div></div>`,
+   bind(){const run=()=>{const g={};C[1].forEach(([,id])=>g[id]=num('c_'+id));$('#c_r').innerHTML=`<div class="res">${C[2](g)}</div>`};$('#page').oninput=run;run()}}},
+ calendar:()=>({title:'מועדי דיווח',sub:'המועדים הקרובים - אפשר להוסיף כל מועד ליומן',html:`<div class="card list2">${deadlines().map((d,i)=>`<div><span style="width:46px;text-align:center"><b style="font-size:20px;color:var(--blue);display:block">${d.d.getDate()}</b><small>${d.d.toLocaleDateString('he-IL',{month:'short'})}</small></span><div class="grow"><b>${d.t}</b><small>${d.left}</small></div><button class="btn" data-ics="${i}">הוספה ליומן</button></div>`).join('')}</div>`,
+  bind(){$('#page').querySelector('.list2').onclick=e=>{const b=e.target.closest('[data-ics]');if(b)ics(deadlines()[b.dataset.ics])}}}),
+};
+PAGES['reps-active']=()=>{setTimeout(()=>{$('#rs').value='פעיל';rpage=1;renderReps()});return null};
+
+/* ---------- helpers: rates, deadlines, ics ---------- */
+let rateCache=null;
+async function rates(){if(rateCache)return rateCache;try{const r=await fetch('https://open.er-api.com/v6/latest/ILS');const j=await r.json();if(j.result!=='success')throw 0;
+  rateCache={r:j.rates,src:'מקור: open.er-api.com · עודכן '+new Date(j.time_last_update_unix*1000).toLocaleString('he-IL')}}catch(e){rateCache={r:{USD:.27,EUR:.25,GBP:.213,JPY:40.8,CHF:.238,CAD:.37,AUD:.415,JOD:.192,EGP:13.3},src:'שערים לדוגמה (משוערים)'}}return rateCache}
+function deadlines(){const n=new Date(),y=n.getFullYear(),m=n.getMonth(),nx=(day,mo=m)=>{let d=new Date(y,mo,day);if(d<n)d=new Date(y,mo+1,day);return d},an=(mo,day)=>{let d=new Date(y,mo,day);if(d<n)d=new Date(y+1,mo,day);return d};
+  return[{t:'דיווח ותשלום מע"מ',d:nx(15)},{t:'דיווח 102 - ניכויים ממשכורת',d:nx(15)},{t:'מקדמות מס הכנסה',d:nx(15)},{t:'דוח 856 שנתי',d:an(3,30)},{t:'דוח 126 שנתי',d:an(3,30)},{t:'דוח שנתי ליחידים (1301)',d:an(4,31)}].sort((a,b)=>a.d-b.d).map(x=>({...x,left:(()=>{const k=Math.ceil((x.d-n)/864e5);return k<=1?'מחר':`בעוד ${k} ימים`})()}))}
+function ics(d){const f=x=>x.toISOString().slice(0,10).replace(/-/g,'');download(`${d.t}.ics`,`BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nUID:${Date.now()}@portal\nDTSTART;VALUE=DATE:${f(d.d)}\nSUMMARY:${d.t}\nBEGIN:VALARM\nTRIGGER:-P2D\nACTION:DISPLAY\nDESCRIPTION:${d.t}\nEND:VALARM\nEND:VEVENT\nEND:VCALENDAR`,'text/calendar');toast('נוסף ליומן ✓')}
+
+/* ---------- wire up dashboard ---------- */
+const stEls=document.querySelectorAll('.st');['reps-active','reports','tasks','tasks:urgent'].forEach((p,i)=>{stEls[i].removeAttribute('data-ask');stEls[i].removeAttribute('data-go');stEls[i].dataset.page=p});
+const qEls=document.querySelectorAll('.q');['fill:rep','vat','annual','fill:case','magen'].forEach((p,i)=>{qEls[i].removeAttribute('data-ask');qEls[i].dataset.page=p});
+document.querySelector('.hl a').dataset.page='activity';
+$('#home').onclick=e=>{const p=e.target.closest('[data-page]');if(p){if(p.dataset.page==='reps-active'){setView('list');$('#rs').value='פעיל';rpage=1;renderReps();return}return go(p.dataset.page)}
+  const a=e.target.closest('#cats [data-ask]');if(a)go('topic',a.dataset.ask)};
+const NAVMAP={'טפסים':'forms','מידע חשוב':'info','שער הדולר':'dollar','שער יציג':'rates','טלפונים שימושיים':'phones','עזרה ותמיכה':'help'};
+document.querySelectorAll('.side .nav').forEach(n=>{const k=NAVMAP[n.textContent.trim()];if(k){n.dataset.pg=k;n.onclick=()=>go(k)}});
+/* chat header buttons */
+const chB=document.querySelectorAll('.ch .tools button');
+chB[1].onclick=()=>{const th=threads[cur];let s=0,muted=false,cam=true;$('#mbox').className='mbox call';
+  $('#mbox').innerHTML=`<img src="assets/man.png" alt=""><h3>${esc(th.n)}</h3><p id="cs" style="opacity:.7;margin-top:6px">מתקשר...</p><div class="cb"><button id="cm" title="השתקה">🎤</button><button id="cv" title="מצלמה">📷</button><button class="end" id="ce" title="ניתוק">✕</button></div>`;$('#modal').classList.add('on');
+  const t=setInterval(()=>{s++;if(s>2)$('#cs').textContent='מחובר · '+String(Math.floor((s-2)/60)).padStart(2,'0')+':'+String((s-2)%60).padStart(2,'0')},1000);
+  $('#cm').onclick=e=>{muted=!muted;e.target.classList.toggle('off',muted)};$('#cv').onclick=e=>{cam=!cam;e.target.classList.toggle('off',!cam)};
+  $('#ce').onclick=()=>{clearInterval(t);$('#modal').classList.remove('on');if(s>2){threads[cur].msgs.push({who:'bot',t:`📹 שיחת וידאו הסתיימה (${Math.floor((s-2)/60)}:${String((s-2)%60).padStart(2,'0')})`,time:now()});renderMsgs();log(`שיחת וידאו עם ${th.n}`)}}};
+chB[2].onclick=()=>{const th=threads[cur],r=reps.find(x=>x.f+' '+x.l===th.n);$('#mbox').className='mbox';
+  $('#mbox').innerHTML=`<button class="x" id="mx">✕</button><img src="${r?r.img:'assets/man.png'}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;margin:0 auto 12px" alt=""><h3>${esc(th.n)}</h3><div class="list2" style="text-align:right;margin-top:14px">
+   <div><div class="grow">טלפון<small dir="ltr" style="text-align:right">${r?r.phone:'052-4418820'}</small></div></div><div><div class="grow">אימייל<small>${r?r.mail:'hani.levin@example.co.il'}</small></div></div><div><div class="grow">מספר תיק<small>${r?r.cs:'315228467'}</small></div></div><div><div class="grow">הודעות בשיחה<small>${th.msgs.length}</small></div></div></div>
+   <div class="pact" style="justify-content:center;margin-top:16px"><button class="btn" id="mt">הורדת תמלול</button><button class="btn pri" id="mxx">סגירה</button></div>`;$('#modal').classList.add('on');
+  $('#mx').onclick=$('#mxx').onclick=()=>$('#modal').classList.remove('on');$('#mt').onclick=()=>$('#dl').click()};
+$('#modal').onclick=e=>{if(e.target.id==='modal'&&!$('#ce'))$('#modal').classList.remove('on')};
+/* topbar: bell + calendar */
+const tImgs=document.querySelectorAll('.topbar img');const bell=tImgs[2],cal=tImgs[0];
+bell.insertAdjacentHTML('afterend','<span class="nb" id="nb"></span>');
+function bellDot(){const r=bell.getBoundingClientRect(),p=bell.parentElement.getBoundingClientRect(),nb=$('#nb');nb.style.display=notes.some(n=>!n.r)?'block':'none';nb.style.left=(r.left-p.left+22)+'px';nb.style.top=(r.top-p.top-1)+'px'}
+function popNotes(){$('#pop').innerHTML=`<h4>התראות <a id="nall">סימון הכל כנקרא</a></h4>${notes.slice(0,12).map((n,i)=>`<div class="it" data-n="${i}">${n.r?'<span style="width:8px"></span>':'<span class="unread" style="margin-top:6px"></span>'}<div class="grow">${esc(n.t)}<small>${n.d}</small></div></div>`).join('')||'<p style="padding:18px;color:var(--mut)">אין התראות</p>'}`;
+  $('#nall').onclick=()=>{notes.forEach(n=>n.r=true);popNotes();bellDot()}}
+function popCal(){$('#pop').innerHTML=`<h4>מועדים קרובים <a id="call">לכל המועדים</a></h4>${deadlines().slice(0,4).map((d,i)=>`<div class="it" data-c="${i}"><b style="color:var(--blue);width:26px">${d.d.getDate()}/${d.d.getMonth()+1}</b><div class="grow">${d.t}<small>${d.left}</small></div></div>`).join('')}`;$('#call').onclick=()=>{$('#pop').classList.remove('on');go('calendar')}}
+bell.onclick=e=>{e.stopPropagation();const on=$('#pop').dataset.k==='n'&&$('#pop').classList.contains('on');popNotes();$('#pop').dataset.k='n';$('#pop').classList.toggle('on',!on)};
+cal.onclick=e=>{e.stopPropagation();const on=$('#pop').dataset.k==='c'&&$('#pop').classList.contains('on');popCal();$('#pop').dataset.k='c';$('#pop').classList.toggle('on',!on)};
+$('#pop').onclick=e=>{e.stopPropagation();const n=e.target.closest('[data-n]'),c=e.target.closest('[data-c]');
+  if(n){const x=notes[n.dataset.n];x.r=true;bellDot();$('#pop').classList.remove('on');x.go==='tasks-urgent'?go('tasks','urgent'):go(x.go)}
+  if(c){ics(deadlines()[c.dataset.c])}};
+document.addEventListener('click',()=>$('#pop').classList.remove('on'));
+/* chat: bot still answers chat questions, but smart links open real screens */
+const _answer=answer;answer=t=>{const [a,c]=_answer(t);return[a,c]};
+/* session + logout + profile restore */
+$('#foot').onclick=()=>{persist();LS.set('user','');location.reload()};
+const prof=LS.get('profile',null);
+if(prof){document.querySelectorAll('#profile input:not([type=password]):not([type=file]),#profile select').forEach(e=>{const k=e.id||e.parentElement.textContent.trim();if(prof[k]!==undefined){e.type==='checkbox'?e.checked=prof[k]:e.value=prof[k]}});
+  if(prof.img){USERIMG=prof.img;$('#pImg').src=USERIMG;document.querySelector('.foot img').src=USERIMG}if(prof.fRole)$('#pRole').textContent=prof.fRole}
+const _enter=enter;enter=n=>{_enter(n);LS.set('user',n);renderRecent();refreshStats();setTimeout(bellDot,50)};
+$('#lf').onsubmit=e=>{e.preventDefault();const u=$('#un').value.trim(),p=$('#pw').value;if(!u||!p)return $('#err').textContent='יש למלא שם משתמש וסיסמה';if(p.length<4)return $('#err').textContent='הסיסמה צריכה להיות לפחות 4 תווים';enter(u)};
+const savedUser=LS.get('user','');if(savedUser)enter(savedUser);
+addEventListener('resize',bellDot);renderRecent();refreshStats();
+</script>
+
+<div class="demo">פרויקט עיצוב · הדגמה בלבד</div>
+
+</body>
+</html>

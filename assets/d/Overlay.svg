@@ -1,0 +1,7 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Overlay">
+<rect x="0.15" y="0.15" width="22.7" height="22.7" rx="11.35" fill="#FAFAFA"/>
+<rect x="0.15" y="0.15" width="22.7" height="22.7" rx="11.35" stroke="#E7E7E7" stroke-width="0.3"/>
+<path id="color" d="M14.2489 16.7315C13.94 17.062 13.4538 17.0874 13.1175 16.8078L13.0368 16.7315L8.75105 12.1482C8.44207 11.8177 8.4183 11.2978 8.67975 10.9382L8.75105 10.8518L13.0368 6.26849C13.3715 5.9105 13.9142 5.9105 14.2489 6.26849C14.5579 6.59893 14.5817 7.11889 14.3203 7.47849L14.2489 7.56485L10.57 11.5L14.2489 15.4352C14.5579 15.7656 14.5817 16.2856 14.3203 16.6452L14.2489 16.7315Z" fill-rule="evenodd" clip-rule="evenodd" fill="#0087FF"/>
+</g>
+</svg>
